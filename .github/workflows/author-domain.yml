@@ -1,0 +1,71 @@
+# Fails if a pushed commit was authored from outside @trisilva.ai.
+#
+# The backstop, not the guard. `.githooks/pre-commit` is what prevents the
+# commit; this only notices afterwards, because a status check cannot block a
+# push that has already landed and this repository is pushed to directly.
+#
+# It is still worth having: the hook needs `git config core.hooksPath .githooks`
+# in every clone, so anyone who has not run that is unprotected and this is the
+# only thing that will say so.
+name: Author domain
+
+on:
+  push:
+  pull_request:
+
+permissions:
+  contents: read
+
+jobs:
+  check:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          # The whole history, so a pull request can be compared against its base
+          # rather than only its tip.
+          fetch-depth: 0
+
+      - name: Check commit author and committer addresses
+        env:
+          DOMAIN: trisilva.ai
+          BEFORE: ${{ github.event.before }}
+          BASE_SHA: ${{ github.event.pull_request.base.sha }}
+        run: |
+          set -eu
+
+          if [ -n "${BASE_SHA:-}" ]; then
+            range="$BASE_SHA..HEAD"
+          elif [ -n "${BEFORE:-}" ] && [ "$BEFORE" != "0000000000000000000000000000000000000000" ] \
+               && git cat-file -e "$BEFORE^{commit}" 2>/dev/null; then
+            range="$BEFORE..HEAD"
+          else
+            # A new branch, or a force push whose previous tip is gone. There is
+            # no meaningful range, so check the tip alone rather than the whole
+            # history, which would fail forever on any old commit.
+            range="HEAD~0..HEAD"
+          fi
+
+          echo "Checking $range"
+          bad=0
+          while IFS='|' read -r sha author committer; do
+            [ -n "$sha" ] || continue
+            for addr in "$author" "$committer"; do
+              case "$addr" in
+                *"@$DOMAIN") ;;
+                *)
+                  echo "::error::$sha is authored by <$addr>, which is not @$DOMAIN"
+                  bad=$((bad + 1))
+                  ;;
+              esac
+            done
+          done <<EOF
+          $(git log --format='%H|%ae|%ce' "$range")
+          EOF
+
+          if [ "$bad" -gt 0 ]; then
+            echo "$bad address(es) outside @$DOMAIN." >&2
+            echo "Enable the guard that prevents this: git config core.hooksPath .githooks" >&2
+            exit 1
+          fi
+          echo "All addresses are @$DOMAIN."

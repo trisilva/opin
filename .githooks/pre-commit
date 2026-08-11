@@ -1,0 +1,56 @@
+#!/bin/sh
+#
+# Refuse a commit authored from outside @trisilva.ai.
+#
+# This repository is public, and a commit address is public with it, permanently
+# and indexed. Every commit here was authored from a personal Gmail address until
+# 2026-08-11, because ~/.gitconfig carried it globally and nothing ever asked.
+# That history had to be rewritten and force-pushed to clear it.
+#
+# This runs at commit time rather than at push time on purpose: it is the last
+# point where nothing has to be rewritten to fix the mistake.
+#
+# Enable it once per clone, since core.hooksPath is local config and cannot be
+# committed:
+#
+#     git config core.hooksPath .githooks
+#
+# To commit as someone else deliberately, set the address on the commit:
+#
+#     git -c user.email=them@trisilva.ai commit ...
+#
+DOMAIN="trisilva.ai"
+
+# `git var` resolves the address git will actually record, after user.email,
+# per-repo overrides, includeIf and GIT_AUTHOR_EMAIL. Reading user.email
+# directly would miss most of those.
+email=$(git var GIT_AUTHOR_IDENT | sed -n 's/^.*<\(.*\)>.*$/\1/p')
+
+case "$email" in
+  *"@$DOMAIN")
+    exit 0
+    ;;
+  "")
+    echo "pre-commit: could not determine the author address. Commit refused." >&2
+    exit 1
+    ;;
+  *)
+    cat >&2 <<EOF
+pre-commit: refusing to commit as <$email>.
+
+  This repository takes commits from @$DOMAIN addresses only. A commit address
+  cannot be corrected later without rewriting history, and on a public repo it
+  is already published by then.
+
+  Fix it for this repository:
+
+      git config user.email you@$DOMAIN
+
+  Or everywhere, if this machine is only used for work:
+
+      git config --global user.email you@$DOMAIN
+
+EOF
+    exit 1
+    ;;
+esac

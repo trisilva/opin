@@ -59,6 +59,20 @@ not touch the wire skip this.
 Say plainly if a change breaks compatibility. A proposal that hides a break is worse than one that
 argues for it.
 
+## If you have write access
+
+Run this once per clone:
+
+```
+git config core.hooksPath .githooks
+```
+
+It refuses a commit authored from outside `@trisilva.ai`. `core.hooksPath` is
+local configuration and cannot be committed, so nothing enables it for you. A
+commit address is public the moment it is pushed and can only be corrected by
+rewriting history, which is why this is checked before the commit rather than
+after. CI reports the same thing, one push too late.
+
 ## Licence of contributions
 
 Contributions are accepted under MPL 2.0, matching the repository. You keep your copyright.
