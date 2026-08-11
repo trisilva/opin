@@ -12,7 +12,7 @@ model, pagination, idempotency, item-level operations, lifecycle endpoints and c
 linkage. None of that is Vietnamese. Every market needs all of it, and it sat here only because the
 standard could not be changed at the time, so base-layer work had nowhere else to go.
 
-All of it has moved to [`standard/`](../../standard/), where every market gets it. What is left in
+All of it has moved to [the standard](../../../), where every market gets it. What is left in
 this profile is what is genuinely specific to Vietnam, and most of that has not been written yet.
 
 If you are building in Vietnam, the standard is what you implement today. This profile is what will
@@ -44,7 +44,7 @@ without a decision about how it is carried.
 ## What does not belong here
 
 Anything another market would also need. That goes to the standard, and the test is in
-[`markets/README.md`](../README.md).
+[`project/markets/README.md`](../README.md).
 
 Anything that only makes sense because of one vendor's software. Distribution mechanics, commission
 ledgers, workflow sub-states and operational service-level measurement all sit above this profile.

@@ -11,7 +11,7 @@ decide for this market. Cite it.
 
 A proposal with no statutory or operational driver behind it usually turns out to be base-standard
 work that has not been recognised yet, and that is a better outcome than a profile, because every
-market gets it. See [`markets/README.md`](../../markets/README.md).
+market gets it. See [`project/markets/README.md`](../../project/markets/README.md).
 
 **What the profile would need to specify.** A list is enough at this stage.
 

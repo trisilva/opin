@@ -39,14 +39,9 @@ certification, there is no certifying body here, and nobody audits a claim made 
 
 ## Extensions
 
-An implementation may carry fields the standard does not define. Two rules make that safe.
-
-An extension field never reuses a name the standard defines, and never changes what a defined field
-means. An extension is additive or it is a fork.
-
-A caller that receives a field it does not recognise ignores it rather than failing. This is
-required in both directions and it is what lets the standard add optional fields in a minor
-version.
+An implementation may carry fields the standard does not define, and two rules make that safe. They
+are wire behaviour rather than process, so they live with the rest of the wire behaviour in
+[`conventions.md`](../conventions.md).
 
 ## Getting to testable
 

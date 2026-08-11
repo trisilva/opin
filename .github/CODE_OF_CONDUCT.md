@@ -15,8 +15,8 @@ Issues, pull requests, discussions and any other space this project uses.
 
 ## Reporting
 
-Email an editor listed in [`MAINTAINERS.md`](MAINTAINERS.md), or open a private vulnerability
-report if you would rather not use email.
+Email an editor listed in [`GOVERNANCE.md`](../project/GOVERNANCE.md), or open a private
+vulnerability report if you would rather not use email.
 
 Reports are read by the editors. A report about an editor is a real difficulty in a project this
 small, and it is worth saying plainly that there is no independent body to escalate to yet. If that

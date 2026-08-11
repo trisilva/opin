@@ -9,7 +9,7 @@ Before anything enters a profile, one question decides where it belongs.
 
 **Would another market need this too?**
 
-If yes, it belongs in [`standard/`](../standard/), even when a single market surfaced it.
+If yes, it belongs in [the standard](../../), even when a single market surfaced it.
 Authentication, error handling, pagination, idempotency and record lifecycle are the same problem
 in every market. They arrived through work on Vietnam and they are not Vietnamese.
 
@@ -41,7 +41,29 @@ not change what an existing field means.
 | `KNOWN-GAPS.md` | What this version does not settle |
 | `CHANGELOG.md` | Versions of this profile |
 
-[`_template/`](_template/) carries the scaffold.
+`profile.md` carries six sections, in this order, and each entry in every one of them names its
+source.
+
+| Section | What goes in it |
+| :--- | :--- |
+| Required fields | Fields the standard makes optional that this market's regulation requires |
+| Restricted values | Enums the standard defines more broadly than this market permits |
+| Added fields | Fields the regulator requires that the standard does not define. Each needs a name that will not collide with a future standard field, and a stated reason it cannot live in the standard |
+| Statutory timings | Anything the law requires to happen within a period, and what it means for the API surface |
+| Data handling | Residency, retention and transfer obligations that constrain what an implementation may transmit or hold, and where |
+| Local formats | Currency, identity documents, addresses, names, dates. Anything the standard assumes that this market does differently |
+
+A section with nothing in it says so. An empty section is information; a missing one is a gap a
+reader cannot see.
+
+## Where this sits in the repository
+
+Market profiles are a peer layer to the standard, not a subordinate one, and they are filed under
+[`project/`](../) today only because there is not yet enough here to justify a root slot. One
+profile, at v0.2, with its constraints still unwritten.
+
+They move back to the root of the repository at the first of these: a profile with real constraints
+written into a `profile.md`, or a second market.
 
 ## Profiles
 

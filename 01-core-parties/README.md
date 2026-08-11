@@ -17,7 +17,7 @@ The insurer, the broker, the personal and commercial policyholder, beneficiaries
 ## Market profiles
 
 Vietnam's identity document types and its personal data obligations both land on this module.
-Neither is written yet. See [`../../markets/vn/`](../../markets/vn/).
+Neither is written yet. See [`../../markets/vn/`](../project/markets/vn/).
 
 ## Where this sits
 

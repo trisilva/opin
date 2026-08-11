@@ -16,7 +16,7 @@ hit is a question, and both are worth filing as long as the difference is clear.
 - No, and here is the regulation or operational fact that makes it market-specific: it belongs in a
   market profile.
 
-See [`markets/README.md`](../../markets/README.md) for the test.
+See [`project/markets/README.md`](../../project/markets/README.md) for the test.
 
 **What you are doing about it today.** The workaround, if you have one. This is useful even when it
 is ugly, because it shows what the standard is forcing people into.

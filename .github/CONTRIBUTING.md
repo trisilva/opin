@@ -7,7 +7,7 @@ Open an issue. No agreement to sign, no membership, no form.
 **A defect in the standard.** Something that is wrong, inconsistent, or missing a relationship the
 model needs. These matter more than anything else here, because everyone building on the standard
 carries them until they are fixed. Twenty are already catalogued in
-[`standard/inherited/concerns-v1.2.1.md`](standard/inherited/concerns-v1.2.1.md) and more are
+[`project/inherited/concerns-v1.2.1.md`](../project/inherited/concerns-v1.2.1.md) and more are
 likely.
 
 **A gap that stops two implementations interoperating.** The strongest version of this names the
@@ -26,11 +26,12 @@ that has not been recognised as such.
 **Vendor product behaviour.** Distribution mechanics, commission ledgers, workflow sub-states,
 operational service-level measurement. These sit above the standard and above every profile, in
 whatever platform an implementer builds. This applies to proposals from maintainers exactly as it
-applies to anyone else.
+applies to anyone else, and [`GOVERNANCE.md`](../project/GOVERNANCE.md) says why that matters here
+in particular.
 
 **Silent renames of misspelled fields.** They are misspelled on the wire in every existing
 implementation. Correcting one breaks every caller, so it is held for a major version rather than
-applied as a tidy-up. See [`VERSIONING.md`](VERSIONING.md).
+applied as a tidy-up. See [`VERSIONING.md`](../project/VERSIONING.md).
 
 **A profile that contradicts the standard.** If a market needs the standard to be different, that is
 an issue against the standard. A local override is a fork with extra steps.
@@ -38,12 +39,12 @@ an issue against the standard. A local override is a fork with extra steps.
 ## Where a change goes
 
 One question decides it. **Would another market need this too?** If yes, the standard. If no, a
-profile. [`markets/README.md`](markets/README.md) carries the worked version of the test.
+profile. [`project/markets/README.md`](../project/markets/README.md) carries the worked version of the test.
 
 ## What happens to your issue
 
 Every decision records a reason, and a rejection without one is a defect in the process that you
-should raise. [`GOVERNANCE.md`](GOVERNANCE.md) has the detail, including how editorship opens and
+should raise. [`GOVERNANCE.md`](../project/GOVERNANCE.md) has the detail, including how editorship opens and
 what happens when a maintainer disagrees with you.
 
 Anything in the documents marked as a reading rather than a settled fact is explicitly open. Those

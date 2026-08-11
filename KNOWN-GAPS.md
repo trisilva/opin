@@ -29,7 +29,7 @@ quiet fork the standard exists to avoid.
 carry different value sets in the two documents. This version treats the data standard as
 authoritative and flags each divergence inline as `[OPIN concern]`.
 
-The full list of twenty is at [`inherited/concerns-v1.2.1.md`](inherited/concerns-v1.2.1.md).
+The full list of twenty is at [`inherited/concerns-v1.2.1.md`](project/inherited/concerns-v1.2.1.md).
 
 ## Handled by convention, not by schema
 
@@ -70,7 +70,7 @@ are wrong.
 
 They are not corrected here. Changing a base URL or a scope name breaks every caller, which makes
 this a major change however small the edit looks, and this version is additive. See
-[`../VERSIONING.md`](../VERSIONING.md).
+[`../VERSIONING.md`](project/VERSIONING.md).
 
 Use them as written. They are strings, they identify the right things, and the name being wrong
 costs a reader a moment of confusion rather than costing an integration anything. The correction

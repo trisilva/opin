@@ -55,11 +55,11 @@ Every profile declares the standard version it targets. A profile never targets 
 
 Every published version stays readable at its tag. The working tree carries one version of the
 standard, the current one, and each released version is reachable through its git tag and recorded
-in [`CHANGELOG.md`](CHANGELOG.md). There is no directory per version, because a copy of the whole
+in [`CHANGELOG.md`](../CHANGELOG.md). There is no directory per version, because a copy of the whole
 standard per release accumulates trees nobody reads and that drift from the one that matters.
 
 The inherited material is the one exception, and it is not an older version of this work. The
-published v1.2.1 and v1.0 are kept unmodified in [`standard/inherited/`](standard/inherited/) so
+published v1.2.1 and v1.0 are kept unmodified in [`project/inherited/`](inherited/) so
 that anyone can see exactly what was changed and by whom.
 
 ## Deprecation

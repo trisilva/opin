@@ -7,43 +7,67 @@ OPIN gives insurers, brokers, distributors and the systems between them a shared
 parties, products, coverage, claims, premium and receipts. It was created by the Open Insurance
 Initiative and published between 2018 and 2022. This repository continues it.
 
-There are two layers here and they answer different questions.
+**Current version: v1.5.0-draft.** A draft, being built against, not ratified.
 
-| Layer | Question it answers | Where |
+## The twelve modules
+
+The standard is the twelve directories at the root of this repository. Each holds the data model and
+the API surface for one module side by side, plus a README naming what to check before implementing
+it.
+
+| | Module | What it covers |
 | :--- | :--- | :--- |
-| **The standard** | What is an insurance policy, a claim, a receipt, and how does a caller ask for one? | [`standard/`](standard/) |
-| **Market profiles** | What does one national market require that a global standard cannot decide for it? | [`markets/`](markets/) |
+| 1 | [Core Parties and Entities](01-core-parties/) | The insurer, the broker, the personal and commercial policyholder, beneficiaries, addresses |
+| 2 | [Products and Catalog](02-products-catalog/) | The product record and the catalogue it sits in |
+| 3 | [Motor](03-motor/) | Motor coverage, vehicle, driver. The only module the inherited API covers |
+| 4 | [Travel](04-travel/) | Travel coverage and the traveller |
+| 5 | [Term Life](05-term-life/) | Term life coverage, the life insured, riders |
+| 6 | [Property](06-property/) | Property coverage, buildings and contents |
+| 7 | [Cyber Liability](07-cyber-liability/) | Cyber liability coverage and the insured business |
+| 8 | [Business Interruption](08-business-interruption/) | Business interruption, usually written alongside property |
+| 9 | [Trade Credit](09-trade-credit/) | Trade credit coverage and the debtor. Not usable as a wire contract |
+| 10 | [Pet](10-pet/) | Pet coverage and the insured animal |
+| 11 | [Claims](11-claims/) | The claim, from first notification through settlement |
+| 12 | [Premium and Receipts](12-premium-receipts/) | Premium, receipts, and the bordereaux that report to reinsurers |
+
+Modules 1, 2, 11 and 12 are cross-cutting and every coverage type uses them. Modules 3 to 10 are the
+eight coverage lines.
+
+Three pages sit alongside the modules and apply to all of them.
+
+| Page | What it holds |
+| :--- | :--- |
+| [`conventions.md`](conventions.md) | Base URL, authentication, error model, pagination, idempotency, action endpoints, extensions, and how the modules are annotated. Read once. |
+| [`cross-module.md`](cross-module.md) | How the entities relate across modules, and the universal claim submission flow |
+| [`KNOWN-GAPS.md`](KNOWN-GAPS.md) | What this version does not settle. Read it before committing to an implementation |
+
+## How to read this
+
+**Building one coverage line.** Open that module's directory. Its README says what to check first,
+then read `data-model.md` for what the fields mean and `api.md` for the surface. Read
+[`conventions.md`](conventions.md) once, because it applies everywhere. If you are new to the
+standard, read [Motor](03-motor/) first even if you are not building motor, because every other
+module's endpoints mirror the shape declared there.
+
+**Building in one market.** Read the module, then the
+[market profile](project/markets/README.md) for your market. A profile constrains and adds; it
+never changes what a field means.
+
+**Fixing a defect.** [`project/inherited/`](project/inherited/) catalogues twenty defects in the
+inherited data standard and fourteen in the inherited API specification. They are the work list.
+
+## The second layer: market profiles
 
 Everything a market shares lives in the standard. Only what a market does not share lives in a
-profile. That line is the whole design, and it is stricter than it sounds: authentication, error
-handling, pagination and record lifecycle are the same problem in Hanoi and in Manila, so they
-belong to the standard even though a single market surfaced them.
+profile, at [`project/markets/`](project/markets/). That line is the whole design, and it is
+stricter than it sounds: authentication, error handling, pagination and record lifecycle are the
+same problem in Hanoi and in Manila, so they belong to the standard even though a single market
+surfaced them.
 
-## Start here
-
-**Building an integration.** Go to the module you need. The standard is organised as twelve
-modules, one directory each, and every directory holds the data model and the API surface side by
-side.
-
-| | | | |
-| :--- | :--- | :--- | :--- |
-| [1 Core Parties](standard/01-core-parties/) | [2 Products](standard/02-products-catalog/) | [3 Motor](standard/03-motor/) | [4 Travel](standard/04-travel/) |
-| [5 Term Life](standard/05-term-life/) | [6 Property](standard/06-property/) | [7 Cyber Liability](standard/07-cyber-liability/) | [8 Business Interruption](standard/08-business-interruption/) |
-| [9 Trade Credit](standard/09-trade-credit/) | [10 Pet](standard/10-pet/) | [11 Claims](standard/11-claims/) | [12 Premium and Receipts](standard/12-premium-receipts/) |
-
-Read [`standard/conventions.md`](standard/conventions.md) once, because authentication, errors,
-pagination and idempotency apply to every module. Read
-[`standard/KNOWN-GAPS.md`](standard/KNOWN-GAPS.md) before you commit to anything, because it lists
-what this version does not settle.
-
-**Working in Vietnam.** [`markets/vn/`](markets/vn/) carries the Vietnam profile.
-
-**Bringing a new market.** [`markets/README.md`](markets/README.md) says what a profile is and what
-starting one involves.
-
-**Deciding whether to trust this.** [`GOVERNANCE.md`](GOVERNANCE.md) says who decides and how, and
-[`standard/inherited/`](standard/inherited/) says exactly what was inherited and what is being
-changed.
+Vietnam is the only profile today, at [`project/markets/vn/`](project/markets/vn/). It is v0.2 and
+nearly empty, which is the honest position rather than a gap. Most of what was previously filed
+there turned out to be base-standard work and has moved into the modules, where every market gets
+it.
 
 ## Where this came from
 
@@ -55,9 +79,9 @@ That is a problem for anyone building on them, because twenty structural defects
 standard have no route to a fix. A claim carries no foreign key to the coverage it belongs to. A
 receipt cannot be reconciled back to the policy that produced it. Trade credit is missing the
 lifecycle fields every other coverage type has. Those are catalogued in
-[`standard/inherited/concerns-v1.2.1.md`](standard/inherited/concerns-v1.2.1.md), with fourteen
-more against the API specification in
-[`standard/inherited/concerns-api-v1.0.md`](standard/inherited/concerns-api-v1.0.md), and until now
+[`project/inherited/concerns-v1.2.1.md`](project/inherited/concerns-v1.2.1.md), with fourteen more
+against the API specification in
+[`project/inherited/concerns-api-v1.0.md`](project/inherited/concerns-api-v1.0.md), and until now
 the only thing an implementer could do about them was carry a private patch.
 
 This repository continues the standard so those get fixed at source. The published v1.2.1 and v1.0
@@ -74,39 +98,27 @@ describing one standard at two versions is how they came to disagree with each o
 `GrosslLossReserve` are wrong and they are also what every existing implementation sends. Renaming
 them is a compatibility break wearing a tidy-up's clothes, so they are reported and left alone. Any
 change that would break a working integration gets the same treatment: it is written down, and it
-waits for a major version.
+waits for a major version. See [`project/VERSIONING.md`](project/VERSIONING.md).
 
-## Status
+## How the project runs
 
-v1.5.0 is a draft and says so. It is being built against and it is not ratified.
+Everything that is not the standard itself is in [`project/`](project/).
 
-The version is Trisilva's work, published openly on top of the inherited v1.2.1 vocabulary. It
-stays on the 1.x line because nothing inherited was removed or renamed, and it skips 1.3 and 1.4 so
-that the Open Insurance Initiative keeps room on its own line if it publishes again.
-[`VERSIONING.md`](VERSIONING.md) carries the reasoning, including why there is no directory per
-version.
-
-The Vietnam profile is at v0.2 and is nearly empty, which is the honest position rather than a gap.
-Most of what was previously filed there turned out to be base-standard work and has moved to
-[`standard/`](standard/), where every market gets it.
-
-## Who maintains this
+| | |
+| :--- | :--- |
+| [`project/GOVERNANCE.md`](project/GOVERNANCE.md) | Who decides, how, and what a contributor can rely on. Includes the editor list and the conflict of interest this project carries |
+| [`project/VERSIONING.md`](project/VERSIONING.md) | What makes a change major, minor or patch, and why this version is 1.5.0 |
+| [`project/CONFORMANCE.md`](project/CONFORMANCE.md) | What a conformance claim means, and the honest note that it is not yet testable |
+| [`project/inherited/`](project/inherited/) | What was received from the Open Insurance Initiative, kept so it can be told apart from what was changed |
+| [`project/markets/`](project/markets/) | The market profiles and the test for what belongs in one |
+| [`.github/CONTRIBUTING.md`](.github/CONTRIBUTING.md) | What a useful issue looks like. The most valuable contribution is a defect in the standard itself |
 
 Trisilva builds insurance operations software in Southeast Asia and does the current editorial
-work. [`GOVERNANCE.md`](GOVERNANCE.md) sets out how a change is decided, how editorship works, and
-what happens to a proposal that a maintainer disagrees with.
-
-The standard is not a Trisilva product and carries no Trisilva product behaviour. Distribution
-mechanics, commission ledgers, workflow sub-states and operational service-level measurement all
-sit above this line, in whatever platform an implementer builds. A proposal that would pull any of
-them in is out of scope, and so is a proposal that only makes sense because of one vendor's
-software. If you find something here that reads that way, it is a defect and an issue is the right
-response.
-
-## Contributing
-
-[`CONTRIBUTING.md`](CONTRIBUTING.md) covers what a useful issue looks like. The most valuable
-contribution is a defect in the standard itself, because it compounds for everyone who builds on it.
+work. The standard is not a Trisilva product and carries no Trisilva product behaviour:
+distribution mechanics, commission ledgers, workflow sub-states and operational service-level
+measurement all sit above this line, in whatever platform an implementer builds. That scope line is
+how the conflict of interest is managed, and
+[`project/GOVERNANCE.md`](project/GOVERNANCE.md) sets out the rest.
 
 ## Licence and attribution
 

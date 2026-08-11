@@ -17,7 +17,7 @@ The claim, from first notification of loss through to settlement. One claim enti
 ## Market profiles
 
 Vietnam's statutory claim handling under Decree 67/2023/ND-CP lands on this module. It is not
-written, and it is gated on Vietnamese counsel. See [`../../markets/vn/`](../../markets/vn/).
+written, and it is gated on Vietnamese counsel. See [`../../markets/vn/`](../project/markets/vn/).
 
 ## Where this sits
 

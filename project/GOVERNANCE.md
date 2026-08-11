@@ -16,7 +16,20 @@ reasoning rather than trust the maintainer.
 
 ## Roles
 
-**Editors** decide what enters the standard. Editors are listed in [`MAINTAINERS.md`](MAINTAINERS.md).
+**Editors** decide what enters the standard.
+
+| Name | Affiliation | Scope |
+| :--- | :--- | :--- |
+| Vu Tung Lam | Trisilva | The standard, and the Vietnam profile |
+
+That is the whole list, and the limitation is described below rather than left to be inferred from
+the length of the table.
+
+**Profile owners** are accountable for what a profile claims about its market's regulation.
+
+| Profile | Accountable |
+| :--- | :--- |
+| `vn` | Unassigned |
 
 **Contributors** open issues and proposals. No agreement or membership is required.
 

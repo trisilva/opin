@@ -17,7 +17,7 @@ Premium, receipts, and the premium and claims bordereaux that report to reinsure
 
 Vietnamese dong is unit-denominated and does not carry the minor units the standard's money handling
 assumes, which has a wire consequence. It is not written yet. See
-[`../../markets/vn/`](../../markets/vn/).
+[`../../markets/vn/`](../project/markets/vn/).
 
 ## Where this sits
 
