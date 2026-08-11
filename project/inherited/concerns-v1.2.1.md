@@ -1,8 +1,8 @@
-# Upstream concerns against OPIN
+# Concerns against the inherited data standard
 
-These are inconsistencies and gaps in the OPIN standard itself, surfaced while authoring the
-Vietnam country track. They are published here so the Open Insurance Initiative can resolve them at
-source rather than every implementer carrying local patches for them.
+These are inconsistencies and gaps in the OPIN standard itself, surfaced while building against it.
+They are this standard's to resolve, each closed in a version of this standard rather than reported
+onward, and this list is the work list for doing that.
 
 Scope note: this list excludes choices an implementer makes (whether to introduce a Policy aggregate
 root, whether to give Coverage an abstract base) and excludes domain areas outside insurance proper
@@ -12,11 +12,10 @@ ledgers). Those are downstream concerns, not OPIN defects.
 Sources: OPIN Data Standard v1.2.1 (the XLSX, treated as authoritative) and OPIN API Specification
 v1.0 (the resolved JSON). Where the two disagree, the disagreement is itself listed below.
 
-A note on the typos. Field names that are wrong but stable on the wire are reported, not corrected.
-Silently fixing a name in a country track would break compatibility with every implementation
-already built to OPIN, which is the opposite of what a track is for.
-
-These are inconsistencies and gaps in the OPIN v1.2.1 standard itself. They should be resolved upstream with the OPIN initiative as part of a future v1.0 publication of the Vietnam track. The list excludes architectural choices that an implementer makes (such as whether to introduce a Policy aggregate root or a Coverage abstract base) and excludes domain extensions outside insurance proper (event streams, telematics ingestion, distribution channels). Those are downstream concerns for product designers, not OPIN issues.
+A note on the typos. Field names that are wrong but stable on the wire are recorded, not corrected.
+Silently fixing a name would break compatibility with every implementation already built to OPIN, so
+those corrections wait for a major version and ship together. See
+[`VERSIONING.md`](../VERSIONING.md).
 
 1. **`termLifeType` and `termLifeRiders` XLSX vs API divergence.** XLSX `termLifeType` has 4 values; API has 3. XLSX `termLifeRiders` has 4 values; API has 5 (the API adds `Convertible term`, which conceptually belongs in `termLifeType`). Resolve which side is authoritative and align both.
 
@@ -58,4 +57,4 @@ These are inconsistencies and gaps in the OPIN v1.2.1 standard itself. They shou
 
 20. **`Product.premiumPaymentFrequency` typed `Number/integer` but references the `premiumPaymentFrequency` enum.** Type-vs-reference inconsistency; choose one.
 
-These are all genuine OPIN issues. Resolving them upstream is preferable to carrying `[normalisation]` patches indefinitely. They are filed here for that purpose; please raise or correct any of them as an issue.
+These are all genuine OPIN issues. Closing them in the standard is preferable to carrying `[normalisation]` patches indefinitely, which is what every implementer had to do while there was nowhere to send them. They are filed here as the work list; please raise or correct any of them as an issue.

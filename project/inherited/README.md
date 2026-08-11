@@ -43,6 +43,6 @@ lifecycle fields every other coverage type has, and the data standard and API sp
 disagree with each other about two term life enums.
 
 The rest are field name errors, type inconsistencies and enum problems. They are individually small
-and collectively the reason a country track had to carry normalisation notes.
+and collectively the reason this standard carries normalisation notes at all.
 
 Fixing them is what this continuation is for. None is closed as of v1.5.0-draft.

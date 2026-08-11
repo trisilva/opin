@@ -67,8 +67,8 @@ erDiagram
 | BICoverage | propertyType | enum (propertyType) | sheet `businessInterruptionCoverage` | Reused from Module 6 |
 | BICoverage | product | ref (Product) | sheet `businessInterruptionCoverage` | Cross-reference to product entity |
 
-`[OPIN concern]`: `closure by public authority` field name in OPIN contains spaces, which break naming conventions used elsewhere. `[normalisation]` to `closureByPublicAuthority`. Upstream candidate.
+`[OPIN concern]`: `closure by public authority` field name in OPIN contains spaces, which break naming conventions used elsewhere. `[normalisation]` to `closureByPublicAuthority`. On the work list.
 
-`[OPIN concern]`: `businessInterruptionCoverage` types most numeric fields as `Number/fFloat` (lower-f typo for `Float`). `[normalisation]` renders as `Number/Float`. Upstream candidate.
+`[OPIN concern]`: `businessInterruptionCoverage` types most numeric fields as `Number/fFloat` (lower-f typo for `Float`). `[normalisation]` renders as `Number/Float`. On the work list.
 
-`[OPIN concern]`: BI coverage typically attaches to a Property; OPIN does not declare an explicit foreign key from `businessInterruptionCoverage` to `property`. A `propertyRef` would tighten the model. Upstream candidate.
+`[OPIN concern]`: BI coverage typically attaches to a Property; OPIN does not declare an explicit foreign key from `businessInterruptionCoverage` to `property`. A `propertyRef` would tighten the model. On the work list.

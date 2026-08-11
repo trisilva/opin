@@ -89,12 +89,12 @@ erDiagram
 | ClaimsBordereau | dateOfLoss | DateTime (ISO 8601) | sheet `ClaimsBordereau` |  |
 | ClaimsBordereau | causeOfLoss | Text | sheet `ClaimsBordereau` | Free-text on bordereau, vs `lossCause` enum on Claim |
 
-`[OPIN concern]`: `Claim.lossCause` references a generic `perils` (lowercase, plural) without specifying which peril enum (`motorPeril`, `propertyPeril`, `tradeCreditPeril`). The intended resolution appears to be polymorphic by coverage type, but OPIN does not declare this. Upstream candidate to define `lossCause` resolution explicitly.
+`[OPIN concern]`: `Claim.lossCause` references a generic `perils` (lowercase, plural) without specifying which peril enum (`motorPeril`, `propertyPeril`, `tradeCreditPeril`). The intended resolution appears to be polymorphic by coverage type, but OPIN does not declare this. On the work list: define `lossCause` resolution explicitly.
 
-`[OPIN concern]`: The `Claim` entity has no explicit foreign key back to a `Coverage` (or any coverage type) or to a policy identifier. The relationship is only inferable from `claimNumber`/`policyNumber` correlation maintained by the cedant. Upstream candidate to add explicit `coverageRef` or `policyNumber` field.
+`[OPIN concern]`: The `Claim` entity has no explicit foreign key back to a `Coverage` (or any coverage type) or to a policy identifier. The relationship is only inferable from `claimNumber`/`policyNumber` correlation maintained by the cedant. On the work list: add an explicit `coverageRef` or `policyNumber` field.
 
 `[OPIN concern]`: `ClaimsBordereau.GrosslLossReserve` field name is misspelled (extra `l` between `Gross` and `Loss`). `[normalisation]` applied.
 
-`[OPIN concern]`: `Claim` has no field for cumulative `paid` to date (cumulative claim payments). `ClaimsBordereau` has `paid` for reinsurance reporting, but the direct-insurance Claim entity carries only `reserve`. Reconciling reserve to paid-out requires this field. Upstream candidate.
+`[OPIN concern]`: `Claim` has no field for cumulative `paid` to date (cumulative claim payments). `ClaimsBordereau` has `paid` for reinsurance reporting, but the direct-insurance Claim entity carries only `reserve`. Reconciling reserve to paid-out requires this field. On the work list.
 
 Out-of-scope for OPIN: claim sub-states beyond open/closed/reopened (such as intake, triage, in-investigation, awaiting-documents, awaiting-payment, settled-pending-recovery, voided), claim-event audit trails, and multi-actor claim workflow. These are operational extensions not modelled by OPIN.

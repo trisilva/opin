@@ -47,7 +47,7 @@ classDiagram
 - `GET /business/{id}` (developer)
 - `PUT /business/{id}` (admin)
 
-`[OPIN concern]`: OPIN does not publish a `cyberIncident` schema or a breach-notification model. Incident reporting and regulator notification timelines are insurance-adjacent operational concerns that an OPIN v1.1 publication should consider, but they are out of scope for this version.
+`[OPIN concern]`: OPIN does not publish a `cyberIncident` schema. Whether the standard needs one is on the work list. Breach-notification and regulator-notification timelines are a separate question and are out of scope by design rather than pending: they are operational service-level measurement, which sits above the standard in whatever platform an implementer builds. See [`KNOWN-GAPS.md`](../KNOWN-GAPS.md).
 
 ### Primary flow: Bind a cyber liability policy
 

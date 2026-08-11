@@ -80,10 +80,10 @@ erDiagram
 | Debtor | latestFinancialsDate | Date | sheet `debtor` |  |
 | Debtor | creditRating | Text | sheet `debtor` | S&P, AM Best, Fitch |
 
-`[OPIN concern]`: `tradeCreditCoverage` is missing the standard policy lifecycle fields that every other coverage carries: `inceptionDate`, `expiryDate`, `status`, `discountAmount`, `premiumRate`, `grossWrittenPremium`, `salesTax`, `brokeragePercentage`, `brokerageAmount`, `premiumPaymentFrequency`, `endorsementID`, `endorsementDate`, `endorsementType`. These are required for any policy and their absence makes the trade credit coverage entity inconsistent with the rest of the OPIN model. Upstream candidate to add.
+`[OPIN concern]`: `tradeCreditCoverage` is missing the standard policy lifecycle fields that every other coverage carries: `inceptionDate`, `expiryDate`, `status`, `discountAmount`, `premiumRate`, `grossWrittenPremium`, `salesTax`, `brokeragePercentage`, `brokerageAmount`, `premiumPaymentFrequency`, `endorsementID`, `endorsementDate`, `endorsementType`. These are required for any policy and their absence makes the trade credit coverage entity inconsistent with the rest of the OPIN model. Adding them is on the work list.
 
-`[OPIN concern]`: OPIN sheet name `tradeCreditTpe` is a typo (should be `tradeCreditType`). `[normalisation]` applies the corrected spelling but the original sheet name is flagged here for upstream report.
+`[OPIN concern]`: OPIN sheet name `tradeCreditTpe` is a typo (should be `tradeCreditType`). `[normalisation]` applies the corrected spelling but the original sheet name is recorded here against the defect.
 
 `[OPIN concern]`: OPIN field `creditLimitUtiilized` on `tradeCreditCoverage` is misspelled (double-i, should be `creditLimitUtilized`). `[normalisation]` applied.
 
-`[OPIN concern]`: `tradeCreditPeril` includes `political risks` (code 3), which overlaps with broader political risk insurance products in `productCatalog`. The line between trade credit and political risk insurance is not clean in OPIN. Upstream candidate to clarify scope.
+`[OPIN concern]`: `tradeCreditPeril` includes `political risks` (code 3), which overlaps with broader political risk insurance products in `productCatalog`. The line between trade credit and political risk insurance is not clean in OPIN. Clarifying the scope is on the work list.

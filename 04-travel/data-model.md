@@ -81,6 +81,6 @@ erDiagram
 | Traveller | idType | enum (idType) | sheet `traveller` |  |
 | Traveller | idNumber | Text | sheet `traveller` |  |
 
-`[OPIN concern]`: The benefit-limit fields on `travelCoverage` (`tripCancellation`, `tripInterruption`, `travelDelay`, `baggageDamage`, `baggageDelay`, `emergencyMedical`, `emergencyDental`, `emergencyEvacuation`, `repatriationOfRemains`, `rentalCarCollision`) are declared without explicit data types in the OPIN XLSX. `[normalisation]` types all to `Number/Float` for consistency with other coverage modules. Upstream candidate.
+`[OPIN concern]`: The benefit-limit fields on `travelCoverage` (`tripCancellation`, `tripInterruption`, `travelDelay`, `baggageDamage`, `baggageDelay`, `emergencyMedical`, `emergencyDental`, `emergencyEvacuation`, `repatriationOfRemains`, `rentalCarCollision`) are declared without explicit data types in the OPIN XLSX. `[normalisation]` types all to `Number/Float` for consistency with other coverage modules. On the work list.
 
-`[OPIN concern]`: `Traveller` does not include address or contact fields. Travel coverage commonly requires emergency contact details and a delivery address for documents; OPIN is silent here. Upstream candidate.
+`[OPIN concern]`: `Traveller` does not include address or contact fields. Travel coverage commonly requires emergency contact details and a delivery address for documents; OPIN is silent here. On the work list.

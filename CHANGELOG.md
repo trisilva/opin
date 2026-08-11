@@ -101,6 +101,34 @@ and `opin-vn.developer` still carry the retired name. They travel on the wire, s
 breaks every caller, and they stay held for a major version alongside the misspelled field names.
 See [`KNOWN-GAPS.md`](KNOWN-GAPS.md). Nothing in this sweep changes what an implementation sends.
 
+### Defects are this standard's to fix, not a report to a dormant upstream
+
+The documents still described themselves as a downstream track filing defects with a live Open
+Insurance Initiative that would publish an OPIN v1.1 to fix them. That was the position before this
+repository took the standard forward, and it survived the earlier moves because it is a change of
+meaning rather than of naming. Thirty-five places, across all twelve modules,
+[`conventions.md`](conventions.md), [`KNOWN-GAPS.md`](KNOWN-GAPS.md) and both concern catalogues.
+
+`Upstream candidate` became `On the work list` on twenty-eight concerns, because there is no
+upstream to send them to any more: this is it. `A future v1.0 of this track must resolve this
+upstream with the OPIN initiative` now names the inherited defect number and points at the work
+list. `An OPIN v1.1 should add an explicit linkage field to Claim` now says that adding it is one of
+the four structural defects and is ours to close.
+[`project/inherited/concerns-v1.2.1.md`](project/inherited/concerns-v1.2.1.md) no longer says it is
+published so the initiative can resolve the defects at source, and its duplicated intro paragraph is
+gone.
+
+None of this makes the initiative disappear from the record. It is still credited as the origin in
+[`README.md`](README.md) and [`project/inherited/`](project/inherited/), and
+[`project/VERSIONING.md`](project/VERSIONING.md) still leaves 1.3 and 1.4 unclaimed so it has room
+if it publishes again. What changed is that nothing here waits on that happening.
+
+Two things were corrected while in there. The cyber liability module said a future publication
+should consider breach-notification timelines, which contradicted `KNOWN-GAPS.md`, where those are
+listed as out of scope by design and never to be closed; the module now matches. And
+`conventions.md` said an OPIN v1.1 should declare authentication, the error model, pagination and
+idempotency, in the same file that declares all four of them.
+
 ### Inherited
 
 The data standard v1.2.1 and API specification v1.0 are kept unmodified in

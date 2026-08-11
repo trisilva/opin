@@ -76,7 +76,7 @@ erDiagram
 | LifeInsured | address | ref (address) | sheet `lifeInsured` | Place of residence |
 | LifeInsured | occupation | Text (ISCO-08) | sheet `lifeInsured` |  |
 
-`[OPIN concern]`: `businessSector` on `termLifeCoverage` is listed without a type or a reference column in the XLSX. The likely intent is UK SIC (matching `Commercial.occupation` and `business.businessSector`). `[normalisation]` types as `Text` with UK SIC reference. Upstream candidate to declare explicitly.
+`[OPIN concern]`: `businessSector` on `termLifeCoverage` is listed without a type or a reference column in the XLSX. The likely intent is UK SIC (matching `Commercial.occupation` and `business.businessSector`). `[normalisation]` types as `Text` with UK SIC reference. Declaring it explicitly is on the work list.
 
 `[OPIN concern]`: `termLifeType` and `termLifeRiders` enum values diverge between the OPIN data standard XLSX and the OPIN API JSON.
   - XLSX `termLifeType` has 4 values: `Term life`, `Decreasing term`, `Renewable term`, `Convertible term`.
@@ -84,6 +84,6 @@ erDiagram
   - XLSX `termLifeRiders` has 4 values: `Accidental death benefit`, `Total permanent disability`, `Total and partial permanent disability`, `Critical illness`.
   - API JSON `termLifeRiders` has 5 values: the XLSX 4 plus `Convertible term` (which conceptually belongs in `termLifeType`, not in riders).
   
-  This document treats the XLSX as authoritative: `termLifeType` is the 4-value set including `Convertible term`; `termLifeRiders` is the 4-value set without `Convertible term`. A future v1.0 of this track must resolve this upstream with the OPIN initiative.
+  This document treats the XLSX as authoritative: `termLifeType` is the 4-value set including `Convertible term`; `termLifeRiders` is the 4-value set without `Convertible term`. Resolving the divergence is inherited defect 1 and is on this standard's work list.
 
-`[OPIN concern]`: `Beneficiary` is not explicitly linked from `termLifeCoverage` in the OPIN sheet, although the universal `Beneficiary` entity exists in Module 1. Term life is the canonical case for beneficiary designation. Upstream candidate to formalise the link.
+`[OPIN concern]`: `Beneficiary` is not explicitly linked from `termLifeCoverage` in the OPIN sheet, although the universal `Beneficiary` entity exists in Module 1. Term life is the canonical case for beneficiary designation. Formalising the link is on the work list.

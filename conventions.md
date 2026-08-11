@@ -20,8 +20,8 @@ Each line is annotated with whether OPIN declares it or whether it is added here
 - **Action endpoints**: state transitions are exposed as `POST /resource/{id}:action` (colon-action style). `[added]`: OPIN declares no action endpoints. The colon-action form is used for endorsements, cancellations, renewals, settlements, reopenings, and refunds because they map to OPIN data-standard concepts (`endorsementType` enum, `policyStatus` transitions, `claimStatus` transitions, `receiptType` reversals) but are not pure CRUD.
 
 `[OPIN concern]`: four of the conventions above (auth, error model, pagination, idempotency) are
-entirely absent from OPIN v1.0. An OPIN v1.1 publication should declare them, otherwise every
-implementer will diverge.
+entirely absent from OPIN v1.0. They are declared above, because
+without them every implementer diverges.
 
 ## Extensions
 

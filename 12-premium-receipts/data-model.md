@@ -54,8 +54,8 @@ erDiagram
 | PremiumBordereau | netPremium | Number/integer | sheet `PremiumBordereau` | After brokerage |
 | PremiumBordereau | transactionType | enum (receiptType) | sheet `PremiumBordereau` | New / renewal / mid-term adjustment |
 
-`[OPIN concern]`: `Receipt` lacks linkage fields to a Policy or Claim. There is no `policyNumber`, `policyRef`, or `claimNumber` on the Receipt entity. Reconciliation between cash-in/cash-out and the policy or claim that originated the transaction therefore cannot be performed using OPIN fields alone. Upstream candidate to add `policyRef` (required for new/renewal/MTA/brokerage/profit-share) and `claimRef` (required for claim payment).
+`[OPIN concern]`: `Receipt` lacks linkage fields to a Policy or Claim. There is no `policyNumber`, `policyRef`, or `claimNumber` on the Receipt entity. Reconciliation between cash-in/cash-out and the policy or claim that originated the transaction therefore cannot be performed using OPIN fields alone. On the work list: add `policyRef` (required for new/renewal/MTA/brokerage/profit-share) and `claimRef` (required for claim payment).
 
-`[OPIN concern]`: OPIN publishes `PremiumBordereau` and `ClaimsBordereau` for reinsurance reporting but does not publish a corresponding direct-insurance premium ledger entity. Reconciling premium accruals, collections, and remittances at the direct-insurance level is not supported by OPIN. Upstream candidate.
+`[OPIN concern]`: OPIN publishes `PremiumBordereau` and `ClaimsBordereau` for reinsurance reporting but does not publish a corresponding direct-insurance premium ledger entity. Reconciling premium accruals, collections, and remittances at the direct-insurance level is not supported by OPIN. On the work list.
 
 Out-of-scope for OPIN: commission ledgers, payout schedules to distribution partners, and microinsurance distribution-channel revenue splits. These are operational concerns not in OPIN's scope.

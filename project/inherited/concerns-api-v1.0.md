@@ -7,14 +7,14 @@ catalogues twenty defects in the inherited data standard.
 These affect every implementation of the inherited specification, not only this one.
 
 
-The following are inconsistencies or omissions in OPIN v1.0 that an OPIN v1.1 publication should resolve upstream with the Open Insurance Initiative. They are listed here so this standard does not paper over them.
+The following are inconsistencies or omissions in OPIN v1.0 that this standard has to resolve. They are listed here so it does not paper over them.
 
 1. **Auth model is undeclared.** OPIN exposes two role tags (`admins`, `developers`) but no auth scheme. Every implementer will diverge until OPIN declares OAuth 2.0 (or equivalent) with normative scope names.
 2. **Error model is undeclared.** OPIN's four endpoints declare bare `400`, `409` descriptions with no body schema. RFC 7807 should be normative.
 3. **Pagination is inconsistent.** OPIN uses `skip`/`limit` query parameters on its four GET endpoints; this does not scale and is unstable under concurrent writes. Cursor-based pagination should be normative.
 4. **Idempotency is undeclared.** No `Idempotency-Key` header convention exists. POST endpoints across the spec are therefore non-idempotent in the wire contract.
 5. **Item-level retrieval is missing for the four motor resources.** OPIN declares only `POST /resource` and `GET /resource` (collection search). `GET /resource/{id}` and `PUT /resource/{id}` are absent across all four motor endpoints. The data standard implies they should exist.
-6. **Endpoint coverage is non-uniform across the data standard.** Motor has CRUD, every other coverage type and every cross-cutting entity has none. The data standard documents 30+ entities; the API documents 4 endpoints on 4 resources. An OPIN v1.1 should publish endpoints for every entity in the data standard.
+6. **Endpoint coverage is non-uniform across the data standard.** Motor has CRUD, every other coverage type and every cross-cutting entity has none. The data standard documents 30+ entities; the API documents 4 endpoints on 4 resources. Endpoints for the remaining entities are added in this version by mirroring the motor pattern; see `conventions.md`.
 7. **Claim-to-coverage linkage is implicit.** The Claim schema lacks an explicit foreign-key field for the policy or coverage being claimed against. Implementations must associate via `policyNumber` carried in the payload.
 8. **Receipt-to-policy linkage is missing.** The Receipt schema has no foreign-key fields for the policy or claim it settles. Reconciliation is impossible without one.
 9. **Lifecycle gaps.** OPIN declares `policyStatus` (in force, cancelled, lapsed, extended) and `claimStatus` (open, closed, reopened), but does not specify which operations transition between them, nor lifecycles for Party, Product, or Receipt at all.

@@ -4,7 +4,7 @@ Everything on this page is a reason to be careful with this version. It is publi
 needs it before committing, not after.
 
 Gaps fall into three kinds, and the distinction matters when deciding what to do about one. Some
-are inherited from OPIN and should be fixed upstream. Some are things this version handles by convention
+are inherited from OPIN and are this standard's to fix. Some are things this version handles by convention
 rather than by schema. Some are deliberate exclusions that will never be closed here.
 
 ## Inherited from OPIN
@@ -21,15 +21,15 @@ declare.
 **Trade credit (module 9) is structurally incomplete.** Unlike every other coverage entity,
 `tradeCreditCoverage` carries no `inceptionDate`, no `expiryDate`, no `status`, and no premium,
 brokerage or endorsement fields. The module is present in the standard for completeness of the
-vocabulary and is not usable as a wire contract at this version. This is an OPIN defect, and closing it at
-the country layer would mean inventing fields OPIN has not defined, which is exactly the kind of
+vocabulary and is not usable as a wire contract at this version. This is an OPIN defect, and closing it in a
+market profile would mean inventing fields OPIN has not defined, which is exactly the kind of
 quiet fork the standard exists to avoid.
 
 **Data standard and API specification disagree in places.** `termLifeType` and `termLifeRiders`
 carry different value sets in the two documents. This version treats the data standard as
 authoritative and flags each divergence inline as `[OPIN concern]`.
 
-The full list of twenty is at [`inherited/concerns-v1.2.1.md`](project/inherited/concerns-v1.2.1.md).
+The full list of twenty is at [`project/inherited/concerns-v1.2.1.md`](project/inherited/concerns-v1.2.1.md).
 
 ## Handled by convention, not by schema
 
@@ -52,8 +52,8 @@ whether a given transition is legal. A v1.0 has to declare them.
 names and enum values: `creditLimitUtiilized`, `issueDtae`, `GrosslLossReserve`, `countryOfRegisteration`,
 `medicalConditon` and others.
 
-The data schema applies an `[normalisation]` in these places, rendering the corrected name
-and flagging the original for upstream report. The API design preserves them verbatim, on the
+The data schema applies a `[normalisation]` in these places, rendering the corrected name
+and recording the original beside it. The API design preserves them verbatim, on the
 grounds that they are already on the wire in every existing implementation.
 
 Both positions are defensible and they cannot both be right in one standard. Until this is resolved,

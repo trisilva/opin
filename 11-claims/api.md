@@ -42,7 +42,7 @@ classDiagram
     Claim --> ClaimsBordereau : ceded into
 ```
 
-`[OPIN concern]`: OPIN's Claim schema does not carry an explicit foreign-key field linking to the policy or coverage being claimed against. Implementations must associate claims to coverage out-of-band (typically via `policyNumber` carried in the claim payload). An OPIN v1.1 should add an explicit linkage field to Claim.
+`[OPIN concern]`: OPIN's Claim schema does not carry an explicit foreign-key field linking to the policy or coverage being claimed against. Implementations must associate claims to coverage out-of-band (typically via `policyNumber` carried in the claim payload). Adding an explicit linkage field to Claim is one of the four structural defects and is on this standard's work list.
 
 ### Endpoints
 
