@@ -39,7 +39,7 @@ classDiagram
 
 ### Endpoints
 
-`[OPIN-VN extension to API; OPIN schema reused]`: OPIN publishes the termLifeCoverage and lifeInsured schemas but no endpoints. Beneficiary CRUD lives in Module 1.
+`[added]`: OPIN publishes the termLifeCoverage and lifeInsured schemas but no endpoints. Beneficiary CRUD lives in Module 1.
 
 - `POST /termLifeCoverage` (admin)
 - `GET /termLifeCoverage` (developer)

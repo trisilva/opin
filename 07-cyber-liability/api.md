@@ -33,7 +33,7 @@ classDiagram
 
 ### Endpoints
 
-`[OPIN-VN extension to API; OPIN schema reused]`: OPIN publishes the cyberLiabilityCoverage and business schemas but no endpoints.
+`[added]`: OPIN publishes the cyberLiabilityCoverage and business schemas but no endpoints.
 
 - `POST /cyberLiabilityCoverage` (admin)
 - `GET /cyberLiabilityCoverage` (developer)

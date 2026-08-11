@@ -37,7 +37,7 @@ classDiagram
 
 ### Endpoints
 
-`[OPIN-VN extension to API; OPIN schema reused]`: OPIN publishes the travelCoverage and traveller schemas but no endpoints. OPIN-VN adds CRUD modelled on the motor pattern.
+`[added]`: OPIN publishes the travelCoverage and traveller schemas but no endpoints. CRUD is added here, modelled on the motor pattern.
 
 - `POST /travelCoverage` (admin)
 - `GET /travelCoverage` (developer)

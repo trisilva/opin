@@ -224,12 +224,12 @@ erDiagram
 | Driver | licence | ref (drivingLicence) | sheet `Driver` |  |
 | Driver | noClaimsDiscount | Number/integer | sheet `Driver` | Years of NCB |
 | Driver | conviction | ref (conviction) | sheet `Driver` | Multi-valued |
-| Driver | medicalCondition | ref (medicalCondition) | sheet `Driver` | OPIN spelling `medicalConditon` on Driver sheet; `[OPIN-VN normalisation]` applied |
+| Driver | medicalCondition | ref (medicalCondition) | sheet `Driver` | OPIN spelling `medicalConditon` on Driver sheet; `[normalisation]` applied |
 | Driver | loading | Number/Float | sheet `Driver` | Young driver % loading |
 | Driver | isBlueBadge | Boolean | sheet `Driver` | UK accessibility scheme |
 | Driver | workStatus | enum (workStatus) | sheet `workStatus` | self-employed / retired / employed / redundant |
 | Vehicle | plateNumber | Text | sheet `Vehicle` |  |
-| Vehicle | countryOfRegistration | Text (ISO 3166-1 alpha-2) | sheet `Vehicle` | OPIN spelling `countryOfRegisteration`; `[OPIN-VN normalisation]` applied |
+| Vehicle | countryOfRegistration | Text (ISO 3166-1 alpha-2) | sheet `Vehicle` | OPIN spelling `countryOfRegisteration`; `[normalisation]` applied |
 | Vehicle | vin | Text | sheet `Vehicle` | Standard VIN |
 | Vehicle | bodyType | enum | sheet `bodyType` | 12 values from motor car to construction equipment |
 | Vehicle | fuelType | enum | sheet `fuelType` | petrol / diesel / electric / hybrid / gas / hydrogen |
@@ -241,10 +241,10 @@ erDiagram
 
 `[OPIN concern]`: The `Vehicle` entity in OPIN bundles 100+ fields spanning registration, OEM specs, real-time telematics, ADAS state, seat occupancy, tire pressure, brake pad wear, and consent flags into one sheet. This is operationally large for a single record and conflates static vehicle attributes with high-frequency telematics state. OPIN does not factor these into separate sub-entities. This document renders Vehicle as a single entity to match OPIN exactly. Upstream candidate: OPIN may wish to split Vehicle into static (registration, OEM specs) and dynamic (telematics, condition) sub-entities.
 
-`[OPIN concern]`: The `Vehicle` sheet contains several typos: `countryOfRegisteration` (should be `countryOfRegistration`), `engnitionOn` and `engnitionOff` (should be `ignitionOn`/`ignitionOff`), `logitude` (should be `longitude`), `laneDepartureWarnning` (should be `laneDepartureWarning`), `decelrationRate` (should be `decelerationRate`), `yearlyMilage` (should be `yearlyMileage`). `[OPIN-VN normalisation]` applied to the field names rendered in the Mermaid block; original OPIN spellings flagged here for upstream report.
+`[OPIN concern]`: The `Vehicle` sheet contains several typos: `countryOfRegisteration` (should be `countryOfRegistration`), `engnitionOn` and `engnitionOff` (should be `ignitionOn`/`ignitionOff`), `logitude` (should be `longitude`), `laneDepartureWarnning` (should be `laneDepartureWarning`), `decelrationRate` (should be `decelerationRate`), `yearlyMilage` (should be `yearlyMileage`). `[normalisation]` applied to the field names rendered in the Mermaid block; original OPIN spellings flagged here for upstream report.
 
-`[OPIN concern]`: The `Driver` sheet field `medicalConditon` is misspelled (should be `medicalCondition`); the enum sheet itself is correctly named `medicalCondition`. `[OPIN-VN normalisation]` applied.
+`[OPIN concern]`: The `Driver` sheet field `medicalConditon` is misspelled (should be `medicalCondition`); the enum sheet itself is correctly named `medicalCondition`. `[normalisation]` applied.
 
-`[OPIN concern]`: The `motorPeril` enum carries 17 values in both the XLSX and the API JSON (codes 0-16) with internal typos in descriptions (`unkown or hit and run`, `volcanic erruption`). `[OPIN-VN normalisation]` may correct enum description spellings without changing codes; codes are stable.
+`[OPIN concern]`: The `motorPeril` enum carries 17 values in both the XLSX and the API JSON (codes 0-16) with internal typos in descriptions (`unkown or hit and run`, `volcanic erruption`). `[normalisation]` may correct enum description spellings without changing codes; codes are stable.
 
 Out-of-scope for OPIN: real-time telematics ingestion, event streaming, PAYD/PHYD billing computations, and ADAS event correlation. These are operational concerns that consume Vehicle telematics fields but are not modelled by OPIN as event entities. Domain extensions, if needed, are out-of-scope for this document.

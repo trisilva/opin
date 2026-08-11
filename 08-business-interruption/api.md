@@ -31,7 +31,7 @@ classDiagram
 
 ### Endpoints
 
-`[OPIN-VN extension to API; OPIN schema reused]`: OPIN publishes the businessInterruptionCoverage schema but no endpoints. The Property schema is reused from Module 6.
+`[added]`: OPIN publishes the businessInterruptionCoverage schema but no endpoints. The Property schema is reused from Module 6.
 
 - `POST /businessInterruptionCoverage` (admin)
 - `GET /businessInterruptionCoverage` (developer)

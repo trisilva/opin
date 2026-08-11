@@ -126,4 +126,4 @@ erDiagram
 
 `[OPIN concern]`: `Commercial` lacks an explicit `legalForm` reference to the `legalEntity` enum that Trade Credit's `Debtor` entity uses. The sheet defines the `legalEntity` enum but does not surface it on `Commercial`, leaving commercial-policyholder legal form unmodelled outside trade credit. Upstream candidate.
 
-`[OPIN concern]`: The `address` sheet uses `postal_code` and `3_word_address` (underscore-prefixed digit) as field names, which break camelCase conventions used elsewhere in OPIN. `[OPIN-VN normalisation]` applied: rendered as `postalCode` and `threeWordAddress`.
+`[OPIN concern]`: The `address` sheet uses `postal_code` and `3_word_address` (underscore-prefixed digit) as field names, which break camelCase conventions used elsewhere in OPIN. `[normalisation]` applied: rendered as `postalCode` and `threeWordAddress`.

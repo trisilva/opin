@@ -83,7 +83,7 @@ erDiagram
 | Claim | paymentMethod | enum (paymentMethod) | sheet `Claim` |  |
 | Claim | documents | Text/URL | sheet `Claim` | Police report, photos, etc. |
 | ClaimsBordereau | treatyReference | Text | sheet `ClaimsBordereau` | Reinsurance treaty |
-| ClaimsBordereau | GrossLossReserve | Number/Float | sheet `ClaimsBordereau` | OPIN typo `GrosslLossReserve` (lowercase l between Gross and Loss); `[OPIN-VN normalisation]` applied |
+| ClaimsBordereau | GrossLossReserve | Number/Float | sheet `ClaimsBordereau` | OPIN typo `GrosslLossReserve` (lowercase l between Gross and Loss); `[normalisation]` applied |
 | ClaimsBordereau | expectedRecovery | Number/Float | sheet `ClaimsBordereau` | Salvage estimate |
 | ClaimsBordereau | recoveryReceived | Number/Float | sheet `ClaimsBordereau` |  |
 | ClaimsBordereau | dateOfLoss | DateTime (ISO 8601) | sheet `ClaimsBordereau` |  |
@@ -93,7 +93,7 @@ erDiagram
 
 `[OPIN concern]`: The `Claim` entity has no explicit foreign key back to a `Coverage` (or any coverage type) or to a policy identifier. The relationship is only inferable from `claimNumber`/`policyNumber` correlation maintained by the cedant. Upstream candidate to add explicit `coverageRef` or `policyNumber` field.
 
-`[OPIN concern]`: `ClaimsBordereau.GrosslLossReserve` field name is misspelled (extra `l` between `Gross` and `Loss`). `[OPIN-VN normalisation]` applied.
+`[OPIN concern]`: `ClaimsBordereau.GrosslLossReserve` field name is misspelled (extra `l` between `Gross` and `Loss`). `[normalisation]` applied.
 
 `[OPIN concern]`: `Claim` has no field for cumulative `paid` to date (cumulative claim payments). `ClaimsBordereau` has `paid` for reinsurance reporting, but the direct-insurance Claim entity carries only `reserve`. Reconciling reserve to paid-out requires this field. Upstream candidate.
 

@@ -38,7 +38,7 @@ classDiagram
 
 ### Endpoints
 
-`[OPIN-VN extension to API; OPIN schema reused]`: OPIN publishes the propertyCoverage and property schemas but no endpoints.
+`[added]`: OPIN publishes the propertyCoverage and property schemas but no endpoints.
 
 - `POST /propertyCoverage` (admin)
 - `GET /propertyCoverage` (developer)

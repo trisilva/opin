@@ -49,21 +49,21 @@ erDiagram
 
 | Entity | Field | Type | OPIN source | Notes |
 |---|---|---|---|---|
-| CyberLiabilityCoverage | claimsOccurrence | Boolean | sheet `cyberLiabilityCoverage` | OPIN spelling `claimsOcuurence` on this sheet; `[OPIN-VN normalisation]` applied. Note Boolean here, separate from the `claimsOccurrence` enum used on Module 6 and Module 8 |
+| CyberLiabilityCoverage | claimsOccurrence | Boolean | sheet `cyberLiabilityCoverage` | OPIN spelling `claimsOcuurence` on this sheet; `[normalisation]` applied. Note Boolean here, separate from the `claimsOccurrence` enum used on Module 6 and Module 8 |
 | Business | businessSector | UK SIC | sheet `business` |  |
 | Business | dataAssets | enum multi (dataAssets) | sheet `dataAssets` | IP / PII / PCI / PHI / Commercial |
 | Business | dataSharing | Boolean | sheet `business` | Third-party / cloud sharing |
 | Business | itStaff | Number/Float | sheet `business` |  |
 | Business | numberOfRecords | Number/Float | sheet `business` | Sensitive records held |
 | Business | grossAnnualTurnover | Number/Float | sheet `business` |  |
-| Business | NumberOfEmployees | Number/Float | sheet `business` | OPIN PascalCase; `[OPIN-VN normalisation]` to camelCase `numberOfEmployees` |
+| Business | NumberOfEmployees | Number/Float | sheet `business` | OPIN PascalCase; `[normalisation]` to camelCase `numberOfEmployees` |
 | Business | onlineTradingVolume | Number/Float | sheet `business` |  |
 | CyberCoverageCategory | code | int | sheet `cyberCoverageCategories` | 21 categories: data loss, breach privacy, incident mgmt, K&R, BI, contingent BI, multi-media liability, legal/defence, reputation, network failure, E&O, professional indemnity, fidelity, IP theft, asset damage, compensation, terrorism, fines, D&O, GL, environmental |
 | DataAssets | code | int | sheet `dataAssets` | 0-4: IP, PII, PCI, PHI, Commercial |
 
-`[OPIN concern]`: The `business` sheet's `cyberCoverageCategories` field references the `cyberLiabilityCoverage` sheet rather than the `cyberCoverageCategories` enum sheet. This is a sheet-level reference error. `[OPIN-VN normalisation]` corrects the reference to point to the `cyberCoverageCategories` enum.
+`[OPIN concern]`: The `business` sheet's `cyberCoverageCategories` field references the `cyberLiabilityCoverage` sheet rather than the `cyberCoverageCategories` enum sheet. This is a sheet-level reference error. `[normalisation]` corrects the reference to point to the `cyberCoverageCategories` enum.
 
-`[OPIN concern]`: The `cyberLiabilityCoverage.claimsOcuurence` field name has two typos (`Ocuurence` should be `Occurrence`). `[OPIN-VN normalisation]` renders as `claimsOccurrence`.
+`[OPIN concern]`: The `cyberLiabilityCoverage.claimsOcuurence` field name has two typos (`Ocuurence` should be `Occurrence`). `[normalisation]` renders as `claimsOccurrence`.
 
 `[OPIN concern]`: `cyberCoverageCategories` enum descriptions contain typos: `Multi-media laibilities`, `Theft of intectual property`. Codes are stable; descriptions can be normalised.
 

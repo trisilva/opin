@@ -78,4 +78,4 @@ erDiagram
 
 `[OPIN concern]`: `petCoverage` is missing the per-occurrence indemnity limit field (`indemnityLimitAccident`) that other coverages carry. `annualReimbursementLimit` may be acting as the policy limit, but the relationship to per-occurrence claims is ambiguous. Upstream candidate.
 
-`[OPIN concern]`: `petCoverage` types `deductible` as `Number/fFloat` (typo). `[OPIN-VN normalisation]` to `Number/Float`. The same lower-f typo appears across multiple sheets (`businessInterruptionCoverage`, `tradeCreditCoverage`, `pet`, `petCoverage`).
+`[OPIN concern]`: `petCoverage` types `deductible` as `Number/fFloat` (typo). `[normalisation]` to `Number/Float`. The same lower-f typo appears across multiple sheets (`businessInterruptionCoverage`, `tradeCreditCoverage`, `pet`, `petCoverage`).

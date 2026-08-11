@@ -38,7 +38,7 @@ classDiagram
 
 ### Endpoints
 
-`[OPIN-VN extension to API; OPIN schema reused]`: OPIN publishes the tradeCreditCoverage and debtor schemas but no endpoints.
+`[added]`: OPIN publishes the tradeCreditCoverage and debtor schemas but no endpoints.
 
 - `POST /tradeCreditCoverage` (admin)
 - `GET /tradeCreditCoverage` (developer)
@@ -84,7 +84,7 @@ stateDiagram-v2
     Lapsed --> [*]
 ```
 
-`[OPIN concern]`: OPIN ships a `waitingPeriod` field on tradeCreditCoverage but no operational signal for entering or exiting it. OPIN-VN does not invent a waiting-period state; the waiting period is a derived calculation against the loss-event date when a claim is filed.
+`[OPIN concern]`: OPIN ships a `waitingPeriod` field on tradeCreditCoverage but no operational signal for entering or exiting it. This standard does not invent a waiting-period state; the waiting period is a derived calculation against the loss-event date when a claim is filed.
 
 ### Routing and error handling
 

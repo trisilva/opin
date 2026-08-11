@@ -52,7 +52,7 @@ whether a given transition is legal. A v1.0 has to declare them.
 names and enum values: `creditLimitUtiilized`, `issueDtae`, `GrosslLossReserve`, `countryOfRegisteration`,
 `medicalConditon` and others.
 
-The data schema applies an `[OPIN-VN normalisation]` in these places, rendering the corrected name
+The data schema applies an `[normalisation]` in these places, rendering the corrected name
 and flagging the original for upstream report. The API design preserves them verbatim, on the
 grounds that they are already on the wire in every existing implementation.
 
@@ -70,16 +70,17 @@ are wrong.
 
 They are not corrected here. Changing a base URL or a scope name breaks every caller, which makes
 this a major change however small the edit looks, and this version is additive. See
-[`../VERSIONING.md`](project/VERSIONING.md).
+[`VERSIONING.md`](project/VERSIONING.md).
 
 Use them as written. They are strings, they identify the right things, and the name being wrong
 costs a reader a moment of confusion rather than costing an integration anything. The correction
 ships with the other held breaks, together, so an implementer absorbs one change instead of three.
 
-**Two annotation markers name the same retired track.** `[OPIN-VN extension to API; OPIN schema
-reused]` and `[OPIN-VN normalisation]` appear throughout both documents. These are prose rather
-than wire, so they carry no compatibility risk and will be replaced. They are listed here so the
-inconsistency is on the record rather than discovered.
+These three are now the only place the retired profile name survives. The annotation markers that
+also carried it were prose rather than wire, so they were swept: `[OPIN-VN extension to API; OPIN
+schema reused]` is now `[added]` and `[OPIN-VN normalisation]` is now `[normalisation]`. That leaves
+a reader one question to ask about any `opin-vn` string they meet, rather than two: if it travels on
+the wire it is held, and if it does not it is already gone.
 
 ## Out of scope by design
 
@@ -100,5 +101,5 @@ claim's business status is OPIN's. A claim's position in one operator's workflow
 
 Only the motor module carries endpoints in OPIN itself. Everywhere else, OPIN publishes entity
 schemas without endpoints, and this version adds the endpoints by mirroring the motor CRUD pattern.
-Those additions are annotated inline as `[OPIN-VN extension to API; OPIN schema reused]`. No new
+Those additions are annotated inline as `[added]`. No new
 entity schemas are introduced anywhere in this version.

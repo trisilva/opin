@@ -46,7 +46,7 @@ The composite view shows OPIN's coverage-centric model: Product instantiates one
 
 ## Cross-module primary flow
 
-OPIN-VN exposes one cross-module primary flow in v0.2: the universal claim submission flow. It is OPIN-aligned because OPIN's `POST /claim` is itself polymorphic across coverages.
+This standard exposes one cross-module primary flow: the universal claim submission flow. It is OPIN-aligned because OPIN's `POST /claim` is itself polymorphic across coverages.
 
 ### Flow A: Submit claim (universal, polymorphic across coverages)
 
@@ -70,4 +70,4 @@ sequenceDiagram
 
 `[OPIN]`: the `POST /claim` entry point is exactly OPIN's. The internal coverage-routing step is implementer-side, hidden from the wire contract. From the caller's perspective, one endpoint serves all coverage types.
 
-`[OPIN concern]`: the polymorphism only works if `policyNumber` deterministically resolves to a single coverage record across all eight coverage types. This requires a uniqueness constraint OPIN does not declare. OPIN-VN treats `policyNumber` as globally unique across the namespace.
+`[OPIN concern]`: the polymorphism only works if `policyNumber` deterministically resolves to a single coverage record across all eight coverage types. This requires a uniqueness constraint OPIN does not declare. This standard treats `policyNumber` as globally unique across the namespace.

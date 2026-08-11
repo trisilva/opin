@@ -34,7 +34,7 @@ classDiagram
 
 ### Endpoints
 
-`[OPIN-VN extension to API; OPIN schema reused]`: OPIN publishes both the petCoverage and pet schemas but no endpoints.
+`[added]`: OPIN publishes both the petCoverage and pet schemas but no endpoints.
 
 - `POST /petCoverage` (admin)
 - `GET /petCoverage` (developer)
@@ -79,7 +79,7 @@ stateDiagram-v2
     Lapsed --> [*]
 ```
 
-`[OPIN concern]`: OPIN ships a `waitingPeriod` field on petCoverage but, as with tradeCreditCoverage, no lifecycle state for it. OPIN-VN treats the waiting period as a derived calculation against `inceptionDate` when a claim is evaluated; the policy itself is `in force` from binding.
+`[OPIN concern]`: OPIN ships a `waitingPeriod` field on petCoverage but, as with tradeCreditCoverage, no lifecycle state for it. This standard treats the waiting period as a derived calculation against `inceptionDate` when a claim is evaluated; the policy itself is `in force` from binding.
 
 ### Routing and error handling
 

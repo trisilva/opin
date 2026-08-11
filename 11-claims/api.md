@@ -51,16 +51,16 @@ OPIN endpoints (kept verbatim, attributed to OPIN, polymorphic across coverages)
 - `POST /claim` (admin) `[OPIN]`
 - `GET /claim` (developer) `[OPIN]`
 
-OPIN-VN extensions on the same OPIN schemas:
+Added here, on the same OPIN schemas:
 
-- `GET /claim/{id}` (developer) `[OPIN-VN extension to API; OPIN schema reused]`
-- `PUT /claim/{id}` (admin) `[OPIN-VN extension to API; OPIN schema reused]`
-- `POST /claim/{id}/documents` (admin) `[OPIN-VN extension to API; OPIN schema reused]`: append to OPIN `documents` array
-- `POST /claim/{id}:settle` (admin) `[OPIN-VN extension to API; OPIN schema reused]`: transitions claimStatus from open to closed and records payment amount/method
-- `POST /claim/{id}:reopen` (admin) `[OPIN-VN extension to API; OPIN schema reused]`: transitions claimStatus from closed to reopened, sets reopenDate
-- `POST /claimsBordereau` (admin) `[OPIN-VN extension to API; OPIN schema reused]`
-- `GET /claimsBordereau` (developer) `[OPIN-VN extension to API; OPIN schema reused]`: filter by treatyReference
-- `GET /claimsBordereau/{id}` (developer) `[OPIN-VN extension to API; OPIN schema reused]`
+- `GET /claim/{id}` (developer) `[added]`
+- `PUT /claim/{id}` (admin) `[added]`
+- `POST /claim/{id}/documents` (admin) `[added]`: append to OPIN `documents` array
+- `POST /claim/{id}:settle` (admin) `[added]`: transitions claimStatus from open to closed and records payment amount/method
+- `POST /claim/{id}:reopen` (admin) `[added]`: transitions claimStatus from closed to reopened, sets reopenDate
+- `POST /claimsBordereau` (admin) `[added]`
+- `GET /claimsBordereau` (developer) `[added]`: filter by treatyReference
+- `GET /claimsBordereau/{id}` (developer) `[added]`
 
 ### Primary flow: Submit a claim (FNOL through settlement)
 
@@ -100,7 +100,7 @@ stateDiagram-v2
     Closed --> [*]
 ```
 
-States are exactly OPIN `claimStatus` (open, closed, reopened). All operational sub-states (triage, investigation, awaiting documents, awaiting payment, fraud review) are implementer-side workflow concerns and do not appear on the OPIN-VN wire.
+States are exactly OPIN `claimStatus` (open, closed, reopened). All operational sub-states (triage, investigation, awaiting documents, awaiting payment, fraud review) are implementer-side workflow concerns and do not appear on the wire.
 
 ### Routing and error handling
 

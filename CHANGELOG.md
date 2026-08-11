@@ -76,6 +76,31 @@ there is one of them and it is nearly empty. `project/markets/README.md` records
 back to the root. The `_template/` scaffold is gone; what a profile contains is described in that
 same README rather than mocked up as empty files.
 
+### The annotation markers no longer name a retired market profile
+
+Every line in the standard carries a marker saying where it came from. Two of them named the Vietnam
+track, which stopped owning this material when the base-layer work moved into the standard. They are
+swept, in prose only, across all twelve modules:
+
+| Was | Is |
+| :--- | :--- |
+| `[OPIN-VN extension to API; OPIN schema reused]` | `[added]` |
+| `[OPIN-VN normalisation]` | `[normalisation]` |
+| `[OPIN-VN]` | `[added]` |
+
+A normalisation is a spelling correction rather than an addition, so it did not collapse into
+`[added]` the way the earlier note said it would. Two markers describing two different things is the
+point of having markers.
+
+Prose that named `OPIN-VN` as the actor was rewritten the same way, because a market profile was
+being credited with decisions that belong to the standard. The annotation table in
+[`conventions.md`](conventions.md) is rewritten to match.
+
+**The three wire identifiers were deliberately not touched.** `api.opin-vn.{tld}`, `opin-vn.admin`
+and `opin-vn.developer` still carry the retired name. They travel on the wire, so correcting them
+breaks every caller, and they stay held for a major version alongside the misspelled field names.
+See [`KNOWN-GAPS.md`](KNOWN-GAPS.md). Nothing in this sweep changes what an implementation sends.
+
 ### Inherited
 
 The data standard v1.2.1 and API specification v1.0 are kept unmodified in

@@ -54,8 +54,9 @@ An editor can decline a proposal. What an editor cannot do is decline it silentl
 reason, and a decision recorded as a preference rather than an argument is a defect in this process
 that you should raise.
 
-Anything marked `[OPIN-VN]` or otherwise flagged as a reading rather than a settled fact is
-explicitly open. A well-argued objection to one of those should be expected to change the document.
+Anything marked `[added]` or `[OPIN concern]`, or otherwise flagged as a reading rather than a
+settled fact, is explicitly open. Those are the places where this project made a call rather than
+inherited one, and a well-argued objection to any of them should be expected to change the document.
 
 ## How editorship opens
 

@@ -64,11 +64,11 @@ classDiagram
     Beneficiary --> Address : has
 ```
 
-`[OPIN concern]`: Address is an embedded value object in the OPIN data standard. It is not a top-level resource and OPIN-VN does not expose it as one. Address fields are only ever sent and received inline within their owning entity.
+`[OPIN concern]`: Address is an embedded value object in the OPIN data standard. It is not a top-level resource and this standard does not expose it as one. Address fields are only ever sent and received inline within their owning entity.
 
 ### Endpoints
 
-`[OPIN-VN extension to API; OPIN schema reused]`: OPIN publishes the InsuranceEntity, Personal, Commercial, Beneficiary, and address schemas but no endpoints. OPIN-VN adds CRUD endpoints modelled on the motor `/vehicle`, `/driver` pattern.
+`[added]`: OPIN publishes the InsuranceEntity, Personal, Commercial, Beneficiary, and address schemas but no endpoints. CRUD endpoints are added here, modelled on the motor `/vehicle`, `/driver` pattern.
 
 - `POST /insuranceEntity` (admin)
 - `GET /insuranceEntity` (developer), search by name or registration number
@@ -92,7 +92,7 @@ classDiagram
 ```mermaid
 sequenceDiagram
     participant Client as Client App
-    participant Gateway as OPIN-VN API Gateway
+    participant Gateway as API Gateway
     participant Service as Party Service
     participant Store as Party Store
     Client->>Gateway: POST /personal {firstName, lastName, dob, address, idType, idNumber}
@@ -115,7 +115,7 @@ stateDiagram-v2
     Active --> [*] : record retained, never hard-deleted
 ```
 
-`[OPIN concern]`: OPIN does not declare a party lifecycle. OPIN-VN keeps the lifecycle conservative: a party record exists or it does not. Status flags such as KYC status, suspension, or closure are out of scope for v0.2 and live in implementer-specific extensions.
+`[OPIN concern]`: OPIN does not declare a party lifecycle. This standard keeps the lifecycle conservative: a party record exists or it does not. Status flags such as KYC status, suspension, or closure are out of scope at this version and live in implementer-specific extensions.
 
 ### Routing and error handling
 

@@ -58,4 +58,4 @@ These are inconsistencies and gaps in the OPIN v1.2.1 standard itself. They shou
 
 20. **`Product.premiumPaymentFrequency` typed `Number/integer` but references the `premiumPaymentFrequency` enum.** Type-vs-reference inconsistency; choose one.
 
-These are all genuine OPIN issues. Resolving them upstream is preferable to carrying `[OPIN-VN normalisation]` patches indefinitely. They are filed here for that purpose; please raise or correct any of them as an issue.
+These are all genuine OPIN issues. Resolving them upstream is preferable to carrying `[normalisation]` patches indefinitely. They are filed here for that purpose; please raise or correct any of them as an issue.

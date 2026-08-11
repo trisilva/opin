@@ -61,14 +61,14 @@ erDiagram
 | BICoverage | contingencyLossLimit | Number/integer | sheet `businessInterruptionCoverage` |  |
 | BICoverage | denialOfAccessLimit | Number/integer | sheet `businessInterruptionCoverage` |  |
 | BICoverage | limitOfLiability | Number/integer | sheet `businessInterruptionCoverage` | Annual policy limit |
-| BICoverage | closureByPublicAuthority | Number/integer | sheet `businessInterruptionCoverage` | OPIN field name `closure by public authority` (with spaces); `[OPIN-VN normalisation]` to camelCase |
+| BICoverage | closureByPublicAuthority | Number/integer | sheet `businessInterruptionCoverage` | OPIN field name `closure by public authority` (with spaces); `[normalisation]` to camelCase |
 | BICoverage | IndemnityPeriod | Number/integer | sheet `businessInterruptionCoverage` | Days; OPIN PascalCase preserved here as it is the only PascalCase field in this entity |
 | BICoverage | claimsOccurrence | enum (claimsOccurrence) | sheet `claimsOccurrence` |  |
 | BICoverage | propertyType | enum (propertyType) | sheet `businessInterruptionCoverage` | Reused from Module 6 |
 | BICoverage | product | ref (Product) | sheet `businessInterruptionCoverage` | Cross-reference to product entity |
 
-`[OPIN concern]`: `closure by public authority` field name in OPIN contains spaces, which break naming conventions used elsewhere. `[OPIN-VN normalisation]` to `closureByPublicAuthority`. Upstream candidate.
+`[OPIN concern]`: `closure by public authority` field name in OPIN contains spaces, which break naming conventions used elsewhere. `[normalisation]` to `closureByPublicAuthority`. Upstream candidate.
 
-`[OPIN concern]`: `businessInterruptionCoverage` types most numeric fields as `Number/fFloat` (lower-f typo for `Float`). `[OPIN-VN normalisation]` renders as `Number/Float`. Upstream candidate.
+`[OPIN concern]`: `businessInterruptionCoverage` types most numeric fields as `Number/fFloat` (lower-f typo for `Float`). `[normalisation]` renders as `Number/Float`. Upstream candidate.
 
 `[OPIN concern]`: BI coverage typically attaches to a Property; OPIN does not declare an explicit foreign key from `businessInterruptionCoverage` to `property`. A `propertyRef` would tighten the model. Upstream candidate.

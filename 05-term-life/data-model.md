@@ -65,7 +65,7 @@ erDiagram
 | Entity | Field | Type | OPIN source | Notes |
 |---|---|---|---|---|
 | TermLifeCoverage | freeCoverLimit | Number/integer | sheet `termLifeCoverage` | Non-medical limit |
-| TermLifeCoverage | totalNumberOfLives | Number/integer | sheet `termLifeCoverage` | Group policies; OPIN spelling `totalNumberiOfLives`; `[OPIN-VN normalisation]` applied |
+| TermLifeCoverage | totalNumberOfLives | Number/integer | sheet `termLifeCoverage` | Group policies; OPIN spelling `totalNumberiOfLives`; `[normalisation]` applied |
 | TermLifeCoverage | totalSumInsured | Number/integer | sheet `termLifeCoverage` |  |
 | TermLifeCoverage | businessSector | Text (UK SIC) | sheet `termLifeCoverage` | OPIN does not declare type or reference; normalised to Text/UK SIC for consistency with Commercial.occupation |
 | TermLifeCoverage | termLifeType | enum (termLifeType) | sheet `termLifeType` | XLSX: 4 values (Term life, Decreasing term, Renewable term, Convertible term) |
@@ -76,7 +76,7 @@ erDiagram
 | LifeInsured | address | ref (address) | sheet `lifeInsured` | Place of residence |
 | LifeInsured | occupation | Text (ISCO-08) | sheet `lifeInsured` |  |
 
-`[OPIN concern]`: `businessSector` on `termLifeCoverage` is listed without a type or a reference column in the XLSX. The likely intent is UK SIC (matching `Commercial.occupation` and `business.businessSector`). `[OPIN-VN normalisation]` types as `Text` with UK SIC reference. Upstream candidate to declare explicitly.
+`[OPIN concern]`: `businessSector` on `termLifeCoverage` is listed without a type or a reference column in the XLSX. The likely intent is UK SIC (matching `Commercial.occupation` and `business.businessSector`). `[normalisation]` types as `Text` with UK SIC reference. Upstream candidate to declare explicitly.
 
 `[OPIN concern]`: `termLifeType` and `termLifeRiders` enum values diverge between the OPIN data standard XLSX and the OPIN API JSON.
   - XLSX `termLifeType` has 4 values: `Term life`, `Decreasing term`, `Renewable term`, `Convertible term`.

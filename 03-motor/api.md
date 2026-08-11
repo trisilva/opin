@@ -63,17 +63,17 @@ OPIN spec endpoints (kept verbatim, motor only, attributed to OPIN):
 - `POST /motorCoverage` (admin) `[OPIN]`
 - `GET /motorCoverage` (developer) `[OPIN]`
 
-OPIN-VN extensions on the same OPIN schemas:
+Added here, on the same OPIN schemas:
 
-- `GET /vehicle/{id}` (developer) `[OPIN-VN extension to API; OPIN schema reused]`
-- `PUT /vehicle/{id}` (admin) `[OPIN-VN extension to API; OPIN schema reused]`
-- `GET /driver/{id}` (developer) `[OPIN-VN extension to API; OPIN schema reused]`
-- `PUT /driver/{id}` (admin) `[OPIN-VN extension to API; OPIN schema reused]`
-- `GET /motorCoverage/{id}` (developer) `[OPIN-VN extension to API; OPIN schema reused]`
-- `PUT /motorCoverage/{id}` (admin) `[OPIN-VN extension to API; OPIN schema reused]`
-- `POST /motorCoverage/{id}:endorse` (admin) `[OPIN-VN extension to API; OPIN schema reused]`: body carries OPIN `endorsementType`
-- `POST /motorCoverage/{id}:cancel` (admin) `[OPIN-VN extension to API; OPIN schema reused]`
-- `POST /motorCoverage/{id}:renew` (admin) `[OPIN-VN extension to API; OPIN schema reused]`
+- `GET /vehicle/{id}` (developer) `[added]`
+- `PUT /vehicle/{id}` (admin) `[added]`
+- `GET /driver/{id}` (developer) `[added]`
+- `PUT /driver/{id}` (admin) `[added]`
+- `GET /motorCoverage/{id}` (developer) `[added]`
+- `PUT /motorCoverage/{id}` (admin) `[added]`
+- `POST /motorCoverage/{id}:endorse` (admin) `[added]`: body carries OPIN `endorsementType`
+- `POST /motorCoverage/{id}:cancel` (admin) `[added]`
+- `POST /motorCoverage/{id}:renew` (admin) `[added]`
 
 ### Primary flow: Bind a motor policy
 

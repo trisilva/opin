@@ -7,7 +7,7 @@ catalogues twenty defects in the inherited data standard.
 These affect every implementation of the inherited specification, not only this one.
 
 
-The following are inconsistencies or omissions in OPIN v1.0 that an OPIN v1.1 publication should resolve upstream with the Open Insurance Initiative. They are listed here so OPIN-VN does not paper over them.
+The following are inconsistencies or omissions in OPIN v1.0 that an OPIN v1.1 publication should resolve upstream with the Open Insurance Initiative. They are listed here so this standard does not paper over them.
 
 1. **Auth model is undeclared.** OPIN exposes two role tags (`admins`, `developers`) but no auth scheme. Every implementer will diverge until OPIN declares OAuth 2.0 (or equivalent) with normative scope names.
 2. **Error model is undeclared.** OPIN's four endpoints declare bare `400`, `409` descriptions with no body schema. RFC 7807 should be normative.
@@ -21,7 +21,7 @@ The following are inconsistencies or omissions in OPIN v1.0 that an OPIN v1.1 pu
 10. **`waitingPeriod` is a field with no operational signal.** It appears on petCoverage and tradeCreditCoverage but with no entry/exit semantics defined.
 11. **Underwriting is absent.** Quoting, underwriting decision, and decline are not modelled. Term life and trade credit in particular need this.
 12. **Endorsement is an enum without operations.** `endorsementType` enumerates seven values but OPIN declares no endpoint for applying an endorsement, and no rules for which fields each endorsement type may mutate.
-13. **Schema naming inconsistency.** OPIN mixes camelCase (`motorCoverage`, `policyWording`) and PascalCase (`Vehicle`, `Driver`, `Claim`, `Personal`, `Commercial`, `Product`, `InsuranceEntity`, `Beneficiary`, `Receipt`, `PremiumBordereau`, `ClaimsBordereau`) for entity names. OPIN-VN uses camelCase paths uniformly to match REST convention.
-14. **Field-name typos.** OPIN ships `tradeCreditTpe` (missing `y`), `GrosslLossReserve` (double `l`, mixed case), `IndemnityPeriod` (capital `I`). OPIN-VN preserves them verbatim for wire compatibility but flags them here.
+13. **Schema naming inconsistency.** OPIN mixes camelCase (`motorCoverage`, `policyWording`) and PascalCase (`Vehicle`, `Driver`, `Claim`, `Personal`, `Commercial`, `Product`, `InsuranceEntity`, `Beneficiary`, `Receipt`, `PremiumBordereau`, `ClaimsBordereau`) for entity names. This standard uses camelCase paths uniformly to match REST convention.
+14. **Field-name typos.** OPIN ships `tradeCreditTpe` (missing `y`), `GrosslLossReserve` (double `l`, mixed case), `IndemnityPeriod` (capital `I`). This standard preserves them verbatim for wire compatibility but flags them here.
 
-These questions affect every OPIN implementation, not only OPIN-VN. They should be raised with the upstream initiative before OPIN-VN reaches v1.0.
+These questions affect every OPIN implementation, not only this one. They are the work list for reaching v1.0.

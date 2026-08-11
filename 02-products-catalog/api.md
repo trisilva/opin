@@ -36,7 +36,7 @@ classDiagram
 
 ### Endpoints
 
-`[OPIN-VN extension to API; OPIN schema reused]`: OPIN publishes the Product and policyWording schemas but no endpoints. OPIN-VN adds CRUD on Product and a read endpoint for the productCatalog enum lookup.
+`[added]`: OPIN publishes the Product and policyWording schemas but no endpoints. CRUD on Product and a read endpoint are added here for the productCatalog enum lookup.
 
 - `POST /product` (admin)
 - `GET /product` (developer), filter by lineOfBusiness, productModel, currency
@@ -76,7 +76,7 @@ stateDiagram-v2
     Registered --> [*] : record retained
 ```
 
-`[OPIN concern]`: OPIN does not declare a Product lifecycle (no draft, active, deprecated states). OPIN-VN keeps the lifecycle conservative. Product activation and deprecation are operational concerns to be encoded in implementer-specific extensions.
+`[OPIN concern]`: OPIN does not declare a Product lifecycle (no draft, active, deprecated states). This standard keeps the lifecycle conservative. Product activation and deprecation are operational concerns to be encoded in implementer-specific extensions.
 
 ### Routing and error handling
 
