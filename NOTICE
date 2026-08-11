@@ -1,0 +1,49 @@
+OPIN
+Copyright (c) 2026 Trisilva Pte. Ltd. and contributors
+
+This work continues the OPIN standard created by the Open Insurance Initiative.
+
+ORIGIN
+------
+
+OPIN Data Standard, versions 1.0 (April 2021) through 1.2.1 (December 2021)
+  Created by: The Open Insurance Initiative (https://openinsurance.io)
+  Licensed under: Mozilla Public License 2.0
+
+OPIN API Specification, version 1.0 (May 2022)
+  Created by: The Open Insurance Initiative (https://openinsurance.io)
+  Licensed under: Apache License 2.0
+  Source: https://github.com/The-Open-Insurance-Initiative/API-spec
+
+The material inherited from both is kept unmodified under standard/inherited/ so that
+what was received and what was changed can be told apart. Every change made on top of
+it is recorded in CHANGELOG.md against the defect or gap it closes.
+
+LICENSING
+---------
+
+This repository is licensed under the Mozilla Public License 2.0, matching the more
+restrictive of the two upstream licences. See LICENSE.
+
+Where Apache 2.0 material is incorporated, the Apache 2.0 attribution requirements are
+satisfied by this file and the origin statement above.
+
+TRADEMARKS
+----------
+
+OPIN, Open Insurance Initiative, The Open Innovation Lab, The Open Insurance Institute,
+The Insurance API Monitor and the Open Insurance logo are trademarks of the Open
+Insurance Initiative.
+
+They are used in this repository to identify the standard this work continues. That is a
+referential use and is not a claim of ownership, endorsement or affiliation.
+
+Trademark guidelines: https://openinsurance.io/trademark-guidelines/
+
+Other product and company names appearing in any document here are used for
+identification only and belong to their respective owners.
+
+CONTACT
+-------
+
+Open an issue on this repository.

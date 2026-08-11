@@ -1,38 +1,63 @@
 # Contributing
 
-Open an issue. That is the whole process at this stage, and it is deliberate: a track with one
-published version and no external implementers does not need governance machinery yet, and
-inventing some would suggest more formality than exists.
+Open an issue. No agreement to sign, no membership, no form.
 
-## In scope
+## What is most useful
 
-- **A correction against OPIN source.** If an entity, field or enum in a track does not match the
-  OPIN sheet it claims to trace to, that is a defect. Cite the sheet.
-- **A gap in a track.** Something an implementation needs to interoperate that the track does not
-  settle. The most useful version of this names the two implementations that would disagree.
-- **An OPIN-side defect.** Add it to `upstream/opin-concerns.md`, or raise it here and it will be
-  added. These are more valuable than anything else on this list, because they are the ones that
-  compound if left alone.
-- **A market with no track.** Say which one and what makes it different. Not a promise that one
-  will be written.
+**A defect in the standard.** Something that is wrong, inconsistent, or missing a relationship the
+model needs. These matter more than anything else here, because everyone building on the standard
+carries them until they are fixed. Twenty are already catalogued in
+[`standard/inherited/concerns-v1.2.1.md`](standard/inherited/concerns-v1.2.1.md) and more are
+likely.
 
-## Out of scope
+**A gap that stops two implementations interoperating.** The strongest version of this names the
+two implementations and what they would disagree about. A gap nobody has hit is a question; a gap
+that broke an integration is a defect.
 
-- **Vendor product behaviour.** Distribution mechanics, commission ledgers, workflow sub-states,
-  operational service-level measurement. These sit above a country track, in whatever platform an
-  implementer builds. Proposals to pull them in will be closed with a pointer to the root README.
-- **Redefining OPIN.** A country track extends the standard beneath it and never contradicts it. If
-  OPIN is wrong, the fix is upstream, and `upstream/opin-concerns.md` is how it gets there.
-- **Silent renames of misspelled fields.** They are misspelled on the wire in every existing
-  implementation. Reporting them upstream is the fix; renaming them here is a compatibility break
-  wearing a tidy-up's clothes.
+**A correction against source.** If an entity, field or enum does not match the OPIN sheet it
+claims to trace to, cite the sheet.
 
-## On disagreement
+**A market with no profile.** Say which one and what makes it different, and cite the regulation. A
+market difference with no statutory or operational driver behind it is usually base-standard work
+that has not been recognised as such.
 
-Anything marked `[OPIN-VN]` in a track is Trisilva's reading of an open question, not a settled
-fact. Those are the places where an issue is most welcome, and where a well-argued objection should
-be expected to change the document.
+## What is out of scope
+
+**Vendor product behaviour.** Distribution mechanics, commission ledgers, workflow sub-states,
+operational service-level measurement. These sit above the standard and above every profile, in
+whatever platform an implementer builds. This applies to proposals from maintainers exactly as it
+applies to anyone else.
+
+**Silent renames of misspelled fields.** They are misspelled on the wire in every existing
+implementation. Correcting one breaks every caller, so it is held for a major version rather than
+applied as a tidy-up. See [`VERSIONING.md`](VERSIONING.md).
+
+**A profile that contradicts the standard.** If a market needs the standard to be different, that is
+an issue against the standard. A local override is a fork with extra steps.
+
+## Where a change goes
+
+One question decides it. **Would another market need this too?** If yes, the standard. If no, a
+profile. [`markets/README.md`](markets/README.md) carries the worked version of the test.
+
+## What happens to your issue
+
+Every decision records a reason, and a rejection without one is a defect in the process that you
+should raise. [`GOVERNANCE.md`](GOVERNANCE.md) has the detail, including how editorship opens and
+what happens when a maintainer disagrees with you.
+
+Anything in the documents marked as a reading rather than a settled fact is explicitly open. Those
+are the places where a well-argued objection should be expected to win.
+
+## Proposals
+
+Anything that changes the standard needs a proposal before it is accepted: what changes, what
+breaks, who it affects, and what an existing implementation has to do about it. Corrections that do
+not touch the wire skip this.
+
+Say plainly if a change breaks compatibility. A proposal that hides a break is worse than one that
+argues for it.
 
 ## Licence of contributions
 
-Contributions are accepted under MPL 2.0, matching the repository.
+Contributions are accepted under MPL 2.0, matching the repository. You keep your copyright.

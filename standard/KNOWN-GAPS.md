@@ -1,10 +1,10 @@
-# OPIN-VN v0.2: known gaps
+# OPIN v1.5.0-draft: known gaps
 
-Everything on this page is a reason to be careful with v0.2. It is published because an implementer
+Everything on this page is a reason to be careful with this version. It is published because an implementer
 needs it before committing, not after.
 
 Gaps fall into three kinds, and the distinction matters when deciding what to do about one. Some
-are inherited from OPIN and should be fixed upstream. Some are things v0.2 handles by convention
+are inherited from OPIN and should be fixed upstream. Some are things this version handles by convention
 rather than by schema. Some are deliberate exclusions that will never be closed here.
 
 ## Inherited from OPIN
@@ -20,16 +20,16 @@ declare.
 
 **Trade credit (module 9) is structurally incomplete.** Unlike every other coverage entity,
 `tradeCreditCoverage` carries no `inceptionDate`, no `expiryDate`, no `status`, and no premium,
-brokerage or endorsement fields. The module is present in this track for completeness of the
-vocabulary and is not usable as a wire contract at v0.2. This is an OPIN defect, and closing it at
+brokerage or endorsement fields. The module is present in the standard for completeness of the
+vocabulary and is not usable as a wire contract at this version. This is an OPIN defect, and closing it at
 the country layer would mean inventing fields OPIN has not defined, which is exactly the kind of
-quiet fork this track exists to avoid.
+quiet fork the standard exists to avoid.
 
 **Data standard and API specification disagree in places.** `termLifeType` and `termLifeRiders`
-carry different value sets in the two documents. The track treats the data standard as
+carry different value sets in the two documents. This version treats the data standard as
 authoritative and flags each divergence inline as `[OPIN concern]`.
 
-The full list of twenty is at [`../upstream/opin-concerns.md`](../upstream/opin-concerns.md).
+The full list of twenty is at [`inherited/concerns-v1.2.1.md`](inherited/concerns-v1.2.1.md).
 
 ## Handled by convention, not by schema
 
@@ -56,14 +56,34 @@ The data schema applies an `[OPIN-VN normalisation]` in these places, rendering 
 and flagging the original for upstream report. The API design preserves them verbatim, on the
 grounds that they are already on the wire in every existing implementation.
 
-Both positions are defensible and they cannot both be right in one track. Until this is resolved,
+Both positions are defensible and they cannot both be right in one standard. Until this is resolved,
 treat the API design document as authoritative for anything that travels on the wire, and read a
 normalisation in the data schema as a note about what OPIN should have called the field rather than
 what your implementation should send. Resolving the inconsistency is on the list for the next patch.
 
+## Breaking changes held for a major version
+
+**Three wire identifiers still name a market profile that no longer owns them.** The base URL is
+`https://api.opin-vn.{tld}/v1` and the two OAuth scopes are `opin-vn.admin` and
+`opin-vn.developer`. This material is base-standard work and applies to every market, so the names
+are wrong.
+
+They are not corrected here. Changing a base URL or a scope name breaks every caller, which makes
+this a major change however small the edit looks, and this version is additive. See
+[`../VERSIONING.md`](../VERSIONING.md).
+
+Use them as written. They are strings, they identify the right things, and the name being wrong
+costs a reader a moment of confusion rather than costing an integration anything. The correction
+ships with the other held breaks, together, so an implementer absorbs one change instead of three.
+
+**Two annotation markers name the same retired track.** `[OPIN-VN extension to API; OPIN schema
+reused]` and `[OPIN-VN normalisation]` appear throughout both documents. These are prose rather
+than wire, so they carry no compatibility risk and will be replaced. They are listed here so the
+inconsistency is on the record rather than discovered.
+
 ## Out of scope by design
 
-These are not gaps to be closed in a later version. They sit above the country track, in whatever
+These are not gaps to be closed in a later version. They sit above the standard, in whatever
 platform an implementer builds, and pulling them in would turn a shared contract into one vendor's
 product specification.
 
@@ -79,6 +99,6 @@ claim's business status is OPIN's. A claim's position in one operator's workflow
 ## Coverage of the API surface
 
 Only the motor module carries endpoints in OPIN itself. Everywhere else, OPIN publishes entity
-schemas without endpoints, and this track adds the endpoints by mirroring the motor CRUD pattern.
+schemas without endpoints, and this version adds the endpoints by mirroring the motor CRUD pattern.
 Those additions are annotated inline as `[OPIN-VN extension to API; OPIN schema reused]`. No new
-entity schemas are introduced anywhere in this track.
+entity schemas are introduced anywhere in this version.
