@@ -1,29 +1,37 @@
 #!/bin/sh
 #
-# Refuse a commit authored from outside @trisilva.ai.
+# Refuse a commit to a Trisilva repository authored from outside @trisilva.ai.
 #
-# This repository is public, and a commit address is public with it, permanently
-# and indexed. Every commit here was authored from a personal Gmail address until
-# 2026-08-11, because ~/.gitconfig carried it globally and nothing ever asked.
-# That history had to be rewritten and force-pushed to clear it.
+# Machine-level, installed by `git config --global core.hooksPath ~/.githooks`.
 #
-# This runs at commit time rather than at push time on purpose: it is the last
-# point where nothing has to be rewritten to fix the mistake.
+# WHY NOT THE COPY INSIDE EACH REPOSITORY. A hook committed at .githooks/
+# pre-commit only exists on the branches that carry the file, so it silently
+# does nothing the moment you check out a branch created before it landed, or
+# any long-lived branch it was never merged into. claimflow sits on `develop`
+# and microflow on a feature branch, so the in-repo copy protected neither.
+# A hook outside the working tree cannot be checked out from under itself.
 #
-# Enable it once per clone, since core.hooksPath is local config and cannot be
-# committed:
+# The in-repo copies stay, because they are the only thing a teammate can find
+# by reading the repository, and this file is not distributable.
 #
-#     git config core.hooksPath .githooks
-#
-# To commit as someone else deliberately, set the address on the commit:
-#
-#     git -c user.email=them@trisilva.ai commit ...
-#
+# SCOPE. Only repositories whose origin is a Trisilva one. A clone of somebody
+# else's project should commit as whoever you are there, and the personal vault
+# is not a Trisilva repository, so both fall through untouched. That is what
+# makes this safe to set globally.
+
 DOMAIN="trisilva.ai"
 
-# `git var` resolves the address git will actually record, after user.email,
-# per-repo overrides, includeIf and GIT_AUTHOR_EMAIL. Reading user.email
-# directly would miss most of those.
+origin=$(git config --get remote.origin.url 2>/dev/null)
+
+# Match the org and the personal-account repo that holds the company brain.
+# Bare `case` rather than grep, to avoid depending on a regex flavour.
+case "$origin" in
+  *github.com[:/]trisilva/*|*github.com[:/]vutunglam/trisilva-os*) ;;
+  *) exit 0 ;;
+esac
+
+# `git var` resolves what git will actually record, after user.email, per-repo
+# overrides, includeIf and GIT_AUTHOR_EMAIL. Reading user.email misses most.
 email=$(git var GIT_AUTHOR_IDENT | sed -n 's/^.*<\(.*\)>.*$/\1/p')
 
 case "$email" in
@@ -38,17 +46,18 @@ case "$email" in
     cat >&2 <<EOF
 pre-commit: refusing to commit as <$email>.
 
-  This repository takes commits from @$DOMAIN addresses only. A commit address
-  cannot be corrected later without rewriting history, and on a public repo it
-  is already published by then.
+  $origin
 
-  Fix it for this repository:
+  Trisilva repositories take commits from @$DOMAIN addresses only. A commit
+  address cannot be corrected later without rewriting history, and on a public
+  repository it is already published by then.
+
+  Fix it here:
 
       git config user.email you@$DOMAIN
 
-  Or everywhere, if this machine is only used for work:
-
-      git config --global user.email you@$DOMAIN
+  This check is machine-level (~/.githooks) and applies on every branch of every
+  Trisilva repository. Other repositories are not affected.
 
 EOF
     exit 1

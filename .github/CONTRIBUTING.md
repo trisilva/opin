@@ -61,17 +61,26 @@ argues for it.
 
 ## If you have write access
 
-Run this once per clone:
+Install the commit guard once, for every Trisilva repository on your machine:
 
 ```
-git config core.hooksPath .githooks
+mkdir -p ~/.githooks
+cp .githooks/pre-commit ~/.githooks/pre-commit
+chmod +x ~/.githooks/pre-commit
+git config --global core.hooksPath ~/.githooks
 ```
 
-It refuses a commit authored from outside `@trisilva.ai`. `core.hooksPath` is
-local configuration and cannot be committed, so nothing enables it for you. A
-commit address is public the moment it is pushed and can only be corrected by
-rewriting history, which is why this is checked before the commit rather than
-after. CI reports the same thing, one push too late.
+It refuses a commit authored from outside `@trisilva.ai`, and only in
+repositories whose origin is a Trisilva one, so your own projects are unaffected.
+
+Install it at `~/.githooks` rather than pointing `core.hooksPath` at the copy in
+this repository. A hook inside the working tree only exists on the branches that
+carry the file, so it silently stops running the moment you check out a branch
+that predates it. One outside the tree cannot be checked out from under itself.
+
+A commit address is public the moment it is pushed and can only be corrected by
+rewriting history, which is why this runs before the commit rather than after.
+CI reports the same thing, one push too late.
 
 ## Licence of contributions
 
