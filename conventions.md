@@ -11,12 +11,19 @@ Nothing that only one market needs belongs here. A market requirement goes in a
 https://api.opin-vn.{tld}/v1
 ```
 
-`{tld}` matches the deploying tenant. The version is a path prefix, so `/v1` and `/v2` are separate
-surfaces and a caller pinned to one is never moved by a change to the other.
+**The standard fixes the path, not the host.** Everything from `/v1` onward is what this document
+governs, and it is the same on every implementation. The host in front of it belongs to whoever
+deployed the API, so an implementation publishes its own and issues it to you with your credentials.
+Do not build the host above from this page.
 
-The host carries `opin-vn`, a market name that no longer describes what is served there. Use it as
-written. Changing a base URL breaks every caller, which makes it a major change however small the
-edit looks. See [`SCOPE.md`](SCOPE.md) for when held changes of this kind ship.
+`{tld}` marks the part that varies by deployment. The version is a path prefix, so `/v1` and `/v2`
+are separate surfaces and a caller pinned to one is never moved by a change to the other.
+
+The form above carries `opin-vn`, a market name that no longer describes what is served under this
+standard. It is kept because it is already in service, and changing a base URL breaks every caller,
+which makes it a major change however small the edit looks. An implementation that has not shipped
+yet is under no obligation to reproduce the name. See [`SCOPE.md`](SCOPE.md) for when held changes
+of this kind ship.
 
 ## Authentication
 
@@ -31,6 +38,11 @@ There is no third scope and no per-resource permission. If you need finer contro
 write, it belongs in your own authorisation layer rather than in the standard's.
 
 Every endpoint in every module names the scope it requires.
+
+**The division is what the standard fixes. The literal string is not.** An implementation may
+namespace these names to itself, and the one you send is the one issued to you with your
+credentials. When a module page says an endpoint needs `admin`, read that as the write scope your
+implementation issued, whatever it is called there.
 
 ## Content type
 
@@ -105,8 +117,8 @@ one major version rather than one at a time. See [`SCOPE.md`](SCOPE.md).
 
 ## Sources
 
-- OPIN Data Standard v1.2.1 (XLSX), published by the Open Insurance Initiative:
-  https://docs.google.com/spreadsheets/d/1Y0Gk_LpTvTNEfoDMdIxeD7juv3E8FKcbE3mHUJNV5JY
-- OPIN API Specification v1.0 (resolved JSON):
-  https://github.com/The-Open-Insurance-Initiative/API-spec/blob/main/Open-Insurance-io-Open_Insurance_API-1.0-resolved.json
-- Mermaid syntax reference, for the diagrams throughout: https://mermaid.js.org/intro/
+- [OPIN Data Standard v1.2.1](https://docs.google.com/spreadsheets/d/1Y0Gk_LpTvTNEfoDMdIxeD7juv3E8FKcbE3mHUJNV5JY)
+  (XLSX), published by the Open Insurance Initiative
+- [OPIN API Specification v1.0](https://github.com/The-Open-Insurance-Initiative/API-spec/blob/main/Open-Insurance-io-Open_Insurance_API-1.0-resolved.json)
+  (resolved JSON)
+- [Mermaid syntax reference](https://mermaid.js.org/intro/), for the diagrams throughout

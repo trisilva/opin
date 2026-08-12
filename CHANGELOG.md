@@ -55,6 +55,24 @@ against. Every warning survived the move, restated as a property of the standard
 Lifecycle diagrams are now marked normative on every module, which is one of the two conditions in
 [`VERSIONING.md`](project/VERSIONING.md) for leaving draft.
 
+### The base URL and the scope names are marked as deployment-issued
+
+[`conventions.md`](conventions.md) printed one base URL and two scope literals in a form a reader
+could take for the values to send. Both are per deployment, and a caller who built them from the
+page reached nothing.
+
+The standard fixes everything from `/v1` onward and the module paths over it. The host in front of
+those paths belongs to whoever deployed the API, and the two scope names describe the read-against-write
+division rather than the strings on the wire. Both now say so, and both point the reader at what was
+issued with their credentials.
+
+The `opin-vn` host form is kept, because it is in service and changing a base URL breaks every
+caller. It is no longer written as an instruction to reproduce it: an implementation that has not
+shipped is free to use its own name.
+
+The wire is unchanged, so this is a documentation correction under
+[`VERSIONING.md`](project/VERSIONING.md).
+
 ### Two version lines became one
 
 The Open Insurance Initiative published the data standard at v1.2.1 and the API specification at
