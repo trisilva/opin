@@ -32,7 +32,7 @@ classDiagram
     Receipt --> PremiumBordereau : aggregated in
 ```
 
-`[OPIN concern]`: OPIN's Receipt schema has no foreign-key field linking the receipt to the policy or claim it settles. Without a linkage, reconciliation is impossible. This standard exposes `policyNumber` and `claimNumber` as collection filter parameters on `/receipt` so receipts can be located by their settled obligation, but the underlying schema gap remains and closing it is on this standard's work list.
+`[added]`: the inherited Receipt schema has no foreign-key field to the policy or claim it settles. This standard exposes `policyNumber` and `claimNumber` as collection filter parameters on `/receipt`, so a receipt is located by the obligation it settles, and the global uniqueness of `policyNumber` is what makes that lookup deterministic. See [`../SCOPE.md`](../SCOPE.md).
 
 ### Endpoints
 

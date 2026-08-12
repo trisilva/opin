@@ -42,7 +42,7 @@ classDiagram
     Claim --> ClaimsBordereau : ceded into
 ```
 
-`[OPIN concern]`: OPIN's Claim schema does not carry an explicit foreign-key field linking to the policy or coverage being claimed against. Implementations must associate claims to coverage out-of-band (typically via `policyNumber` carried in the claim payload). Adding an explicit linkage field to Claim is one of the four structural defects and is on this standard's work list.
+`[added]`: the inherited Claim schema carries no foreign-key field to the policy or coverage being claimed against, which left implementations associating the two out of band. This version declares the linkage instead. `policyNumber` is globally unique across the namespace and travels in the claim payload, and `/claim` accepts it as a collection filter, so a claim resolves to exactly one coverage record across all eight coverage types. That constraint is what makes the polymorphic `POST /claim` work at all. See [`../SCOPE.md`](../SCOPE.md).
 
 ### Endpoints
 

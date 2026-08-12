@@ -2,7 +2,7 @@
 
 These are inconsistencies and gaps in the OPIN standard itself, surfaced while building against it.
 They are this standard's to resolve, each closed in a version of this standard rather than reported
-onward, and this list is the work list for doing that.
+onward. Three are closed at v1.5.0-draft and are marked below.
 
 Scope note: this list excludes choices an implementer makes (whether to introduce a Policy aggregate
 root, whether to give Coverage an abstract base) and excludes domain areas outside insurance proper
@@ -29,7 +29,7 @@ those corrections wait for a major version and ship together. See
 
 6. **`tradeCreditCoverage.creditLimitUtiilized` field name typo.** Should be `creditLimitUtilized`.
 
-7. **`tradeCreditCoverage` missing standard policy lifecycle fields.** Unlike every other coverage entity, `tradeCreditCoverage` does not carry `inceptionDate`, `expiryDate`, `status`, premium fields, brokerage fields, or endorsement fields. Add them.
+7. **`tradeCreditCoverage` missing standard policy lifecycle fields.** Unlike every other coverage entity, `tradeCreditCoverage` does not carry `inceptionDate`, `expiryDate`, `status`, premium fields, brokerage fields, or endorsement fields. Added in v1.5.0-draft. Closed.
 
 8. **`business.cyberCoverageCategories` reference points to wrong sheet.** Field references the `cyberLiabilityCoverage` sheet rather than the `cyberCoverageCategories` enum sheet.
 
@@ -39,9 +39,9 @@ those corrections wait for a major version and ship together. See
 
 11. **`petKind` covers 5 kinds but `petBreed` enumerates dogs only.** Cat, rabbit, bird, and exotic-pet breeds unmodelled. Either restrict breed to dogs explicitly, add per-kind breed enumerations, or specify a free-text fallback.
 
-12. **`Claim` lacks an explicit foreign key to Coverage or Policy.** Inferred from `claimNumber`/`policyNumber` correlation. Add explicit reference.
+12. **`Claim` lacks an explicit foreign key to Coverage or Policy.** Inferred from `claimNumber`/`policyNumber` correlation. Closed in v1.5.0-draft by declaring `policyNumber` globally unique across the namespace.
 
-13. **`Receipt` lacks `policyRef` and `claimRef` linkage fields.** Reconciliation requires these foreign keys. Add explicit references.
+13. **`Receipt` lacks `policyRef` and `claimRef` linkage fields.** Reconciliation requires these foreign keys. Closed in v1.5.0-draft by the same uniqueness rule, with `?policyNumber=` and `?claimNumber=` filters on `/receipt`.
 
 14. **`Claim.lossCause` references generic `perils` without specifying which peril enum.** Polymorphic resolution by coverage type is implied but not declared. Make explicit.
 

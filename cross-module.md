@@ -40,7 +40,7 @@ erDiagram
     CLAIM ||--o{ CLAIMS_BORDEREAU : "ceded in"
 ```
 
-The composite view shows OPIN's coverage-centric model: Product instantiates one of the eight coverage types, Personal or Commercial parties act as policyholders, Beneficiary attaches at policy level (canonically term life), Claim arises from any coverage, Receipt records the cash leg, and PremiumBordereau/ClaimsBordereau are reinsurance-side reports. The associations marked here for Claim and Receipt are conceptual; OPIN does not declare the foreign keys (see Module 11 and Module 12 OPIN concerns).
+The composite view shows OPIN's coverage-centric model: Product instantiates one of the eight coverage types, Personal or Commercial parties act as policyholders, Beneficiary attaches at policy level (canonically term life), Claim arises from any coverage, Receipt records the cash leg, and PremiumBordereau/ClaimsBordereau are reinsurance-side reports. Claim and Receipt reach their coverage through `policyNumber`, which this standard declares globally unique across the namespace. That rule is what carries the two associations the inherited schema left implicit, and it is set out in [`SCOPE.md`](SCOPE.md).
 
 ---
 
@@ -70,4 +70,4 @@ sequenceDiagram
 
 `[OPIN]`: the `POST /claim` entry point is exactly OPIN's. The internal coverage-routing step is implementer-side, hidden from the wire contract. From the caller's perspective, one endpoint serves all coverage types.
 
-`[OPIN concern]`: the polymorphism only works if `policyNumber` deterministically resolves to a single coverage record across all eight coverage types. This requires a uniqueness constraint OPIN does not declare. This standard treats `policyNumber` as globally unique across the namespace.
+`[added]`: the polymorphism works because `policyNumber` resolves deterministically to a single coverage record across all eight coverage types. The inherited standard assumed that constraint without declaring it. This version declares it: `policyNumber` is globally unique across the namespace, and an implementation assigns policy numbers from one sequence across every coverage type it writes. See [`SCOPE.md`](SCOPE.md).

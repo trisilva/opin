@@ -47,7 +47,7 @@ naming what to check before implementing it. Those twelve directories sit at the
 repository, because the standard is what the repository is for and it should be the first thing
 visible in it. What applies to every module was lifted out beside them, to
 [`conventions.md`](conventions.md), [`cross-module.md`](cross-module.md) and
-[`KNOWN-GAPS.md`](KNOWN-GAPS.md).
+[`SCOPE.md`](SCOPE.md).
 
 Everything that is not the standard is in [`project/`](project/): governance, versioning,
 conformance, the inherited material and the market profiles. Contributing, the code of conduct and
@@ -99,7 +99,7 @@ being credited with decisions that belong to the standard. The annotation table 
 **The three wire identifiers were deliberately not touched.** `api.opin-vn.{tld}`, `opin-vn.admin`
 and `opin-vn.developer` still carry the retired name. They travel on the wire, so correcting them
 breaks every caller, and they stay held for a major version alongside the misspelled field names.
-See [`KNOWN-GAPS.md`](KNOWN-GAPS.md). Nothing in this sweep changes what an implementation sends.
+See [`SCOPE.md`](SCOPE.md). Nothing in this sweep changes what an implementation sends.
 
 ### Defects are this standard's to fix, not a report to a dormant upstream
 
@@ -107,13 +107,13 @@ The documents still described themselves as a downstream track filing defects wi
 Insurance Initiative that would publish an OPIN v1.1 to fix them. That was the position before this
 repository took the standard forward, and it survived the earlier moves because it is a change of
 meaning rather than of naming. Thirty-five places, across all twelve modules,
-[`conventions.md`](conventions.md), [`KNOWN-GAPS.md`](KNOWN-GAPS.md) and both concern catalogues.
+[`conventions.md`](conventions.md), [`SCOPE.md`](SCOPE.md) and both concern catalogues.
 
-`Upstream candidate` became `On the work list` on twenty-eight concerns, because there is no
-upstream to send them to any more: this is it. `A future v1.0 of this track must resolve this
-upstream with the OPIN initiative` now names the inherited defect number and points at the work
-list. `An OPIN v1.1 should add an explicit linkage field to Claim` now says that adding it is one of
-the four structural defects and is ours to close.
+`Upstream candidate` became `Change proposal` on twenty-eight concerns, because there is no upstream
+to send them to any more: this is it. `A future v1.0 of this track must resolve this upstream with
+the OPIN initiative` now names the inherited defect number and states the position this version
+takes. `An OPIN v1.1 should add an explicit linkage field to Claim` is closed outright by the
+`policyNumber` uniqueness rule.
 [`project/inherited/concerns-v1.2.1.md`](project/inherited/concerns-v1.2.1.md) no longer says it is
 published so the initiative can resolve the defects at source, and its duplicated intro paragraph is
 gone.
@@ -124,8 +124,17 @@ None of this makes the initiative disappear from the record. It is still credite
 if it publishes again. What changed is that nothing here waits on that happening.
 
 Two things were corrected while in there. The cyber liability module said a future publication
-should consider breach-notification timelines, which contradicted `KNOWN-GAPS.md`, where those are
-listed as out of scope by design and never to be closed; the module now matches. And
+should consider breach-notification timelines, which contradicted the scope boundary, where those
+are listed as out of scope by design and never to be closed; the module now matches.
+
+### `KNOWN-GAPS.md` became `SCOPE.md`
+
+Same material, and a different job. The file held four things: how the entities link, what is
+settled by convention, what is held for a major version, and what the standard will never cover.
+Three of those four are decisions rather than gaps, and filing them under a name that says "gaps"
+described the standard as a set of holes with some prose around them. `SCOPE.md` says what the file
+does, which is draw the boundary. The page publishes at `/docs/standard/scope`, and the old path
+redirects. And
 `conventions.md` said an OPIN v1.1 should declare authentication, the error model, pagination and
 idempotency, in the same file that declares all four of them.
 
@@ -138,18 +147,33 @@ against the API specification at
 [`project/inherited/concerns-api-v1.0.md`](project/inherited/concerns-api-v1.0.md). The API list
 was previously an appendix inside the API document and had no home of its own.
 
-### Not yet done
+### Structural defects closed
 
-None of the twenty inherited defects is closed in this version. The version reorganises what
-existed and establishes where a fix goes; it does not fix anything yet.
+**Claim-to-coverage and receipt-to-obligation linkage.** The inherited schema declared no foreign
+key from `Claim` to a coverage and none from `Receipt` to the policy or claim that produced it, and
+inferred both from correlation. This version declares the constraint the model was already
+assuming: `policyNumber` is globally unique across the namespace, it travels in the payload where
+the linkage matters, and `/claim` and `/receipt` expose `?policyNumber=` and `?claimNumber=` as
+collection filters. Closes inherited defects 12 and 13.
 
-Two things carried forward unresolved from the previous publication. The data model and the API
-design take opposite positions on whether misspelled field names are corrected or preserved, and
-the API design governs the wire until that is settled. Lifecycle transitions are walked
-conservatively in the API design and are not normative, so two conformant implementations can still
-disagree about whether a transition is legal.
+**Trade credit lifecycle.** `tradeCreditCoverage` was the only coverage entity of the eight carrying
+no `inceptionDate`, `expiryDate`, `status`, or premium, brokerage and endorsement fields, which left
+it describing a credit limit with no policy around it. All thirteen are supplied, with the names,
+types and value sets they carry everywhere else. Closes inherited defect 7.
 
-Both are in [`KNOWN-GAPS.md`](KNOWN-GAPS.md).
+**Lifecycle transitions are normative.** The state diagrams in each module's API page were
+previously a conservative reading with no normative force, so two conformant implementations could
+disagree about whether a transition was legal. They are now normative. A transition they do not draw
+is not a transition an implementation may make.
+
+**The naming rule is settled.** The data model and the API design took opposite positions on whether
+misspelled inherited field names are corrected or preserved. The rule is now stated once: the API
+governs anything that travels on the wire, and the data model governs what a field means. A
+`[normalisation]` records what the field should have been called and never changes what an
+implementation sends. See [`conventions.md`](conventions.md).
+
+The remaining inherited defects are compatibility breaks held for the next major version, so that an
+implementer absorbs them together rather than one at a time. They are in [`SCOPE.md`](SCOPE.md).
 
 ---
 
@@ -158,7 +182,8 @@ Both are in [`KNOWN-GAPS.md`](KNOWN-GAPS.md).
 ## vn-v0.2 (2026-04-29, amended)
 
 Published as OPIN-VN v0.2. Everything in it that was base-standard work has since moved to the
-standard at v1.5.0. What remains is the scope of the profile, which is not yet written.
+standard at v1.5.0. What remains is what is genuinely Vietnamese: money, addresses, identity
+documents, statutory claim handling and personal data.
 
 Original v0.2 scope, for the record: endpoint completion to close the gap between OPIN's full data
 standard and its partial v1.0 API specification. No new entity schemas and no vendor product

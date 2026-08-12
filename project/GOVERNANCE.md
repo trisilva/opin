@@ -63,9 +63,9 @@ inherited one, and a well-argued objection to any of them should be expected to 
 Two independent implementers, or one sustained outside contributor, and editorship opens. This is
 written here so it can be held against us rather than as an aspiration.
 
-The reason it is not open already is that there is nobody to open it to. The reason it is written
-down is that a standard governed by one company is worth less than one governed by several, and
-saying when that changes is more useful than saying it will.
+The threshold is written down because a standard governed by one company is worth less than one
+governed by several, and naming the condition is more useful than promising the outcome. An editor
+seat follows sustained work on the standard, so the way to take one is to do the work.
 
 ## Conflict of interest
 

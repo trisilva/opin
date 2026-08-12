@@ -19,9 +19,9 @@ The claim, from first notification of loss through to settlement. One claim enti
 Vietnam's statutory claim handling under Decree 67/2023/ND-CP lands on this module. It is not
 written, and it is gated on Vietnamese counsel. See [`../../markets/vn/`](../project/markets/vn/).
 
-## Where this sits
+## Related pages
 
 Part of the standard at v1.5.0-draft. Conventions that apply to every module are in
 [`../conventions.md`](../conventions.md). Relationships that span modules are in
-[`../cross-module.md`](../cross-module.md). The full gap list is
-[`../KNOWN-GAPS.md`](../KNOWN-GAPS.md).
+[`../cross-module.md`](../cross-module.md). The scope boundary and the decisions that apply everywhere are in
+[`../SCOPE.md`](../SCOPE.md).

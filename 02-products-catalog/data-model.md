@@ -86,8 +86,8 @@ erDiagram
 | PaymentMethod | code | int | sheet `paymentMethod` | cash / credit card / cheque / electronic transfer / crypto |
 | PremiumPaymentFrequency | code | int | sheet `premiumPaymentFrequency` | 0-9: annual, bi-annual, quarterly, monthly, bi-monthly, weekly, daily, usage-based, subscription, other |
 
-`[OPIN concern]`: `policyWording` is defined as a single-property entity with just `name`. OPIN does not specify version control, effective date, or wording document URL for the underlying policy text. Compliance traceability and reissuance handling are not supported. On the work list.
+`[OPIN concern]`: `policyWording` is defined as a single-property entity with just `name`. OPIN does not specify version control, effective date, or wording document URL for the underlying policy text. Compliance traceability and reissuance handling are not supported. Filed as a change proposal.
 
-`[OPIN concern]`: `productCatalog` (65 entries) does not include parametric weather, index-linked microinsurance, or microinsurance-specific products explicitly. Parametric and index-linked products map only loosely to existing codes (e.g., 36 purchase protection or 30 personal accident). On the work list: whether parametric variants merit dedicated codes.
+`[OPIN concern]`: `productCatalog` (65 entries) does not include parametric weather, index-linked microinsurance, or microinsurance-specific products explicitly. Parametric and index-linked products map only loosely to existing codes (e.g., 36 purchase protection or 30 personal accident). Change proposal: whether parametric variants merit dedicated codes.
 
 `[OPIN concern]`: `Product.premiumPaymentFrequency` is typed `Number/integer` on the `Product` sheet but references the `premiumPaymentFrequency` enum. Type vs reference inconsistency. The enum is authoritative; type should be `enum`.

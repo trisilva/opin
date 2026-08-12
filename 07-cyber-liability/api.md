@@ -47,7 +47,7 @@ classDiagram
 - `GET /business/{id}` (developer)
 - `PUT /business/{id}` (admin)
 
-`[OPIN concern]`: OPIN does not publish a `cyberIncident` schema. Whether the standard needs one is on the work list. Breach-notification and regulator-notification timelines are a separate question and are out of scope by design rather than pending: they are operational service-level measurement, which sits above the standard in whatever platform an implementer builds. See [`KNOWN-GAPS.md`](../KNOWN-GAPS.md).
+`[OPIN concern]`: OPIN publishes no `cyberIncident` schema, so a cyber loss is described through the common `Claim` entity like every other coverage type. Breach-notification and regulator-notification timelines are out of scope by design rather than pending. They are operational service-level measurement, which sits above the standard in whatever platform an implementer builds. See [`SCOPE.md`](../SCOPE.md).
 
 ### Primary flow: Bind a cyber liability policy
 

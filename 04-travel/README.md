@@ -13,11 +13,11 @@ Travel coverage and the traveller, covering both single-trip and annual multi-tr
 
 ## Market profiles
 
-None yet.
+This module is market-neutral. Nothing it defines varies by market, so no profile constrains it.
 
-## Where this sits
+## Related pages
 
 Part of the standard at v1.5.0-draft. Conventions that apply to every module are in
 [`../conventions.md`](../conventions.md). Relationships that span modules are in
-[`../cross-module.md`](../cross-module.md). The full gap list is
-[`../KNOWN-GAPS.md`](../KNOWN-GAPS.md).
+[`../cross-module.md`](../cross-module.md). The scope boundary and the decisions that apply everywhere are in
+[`../SCOPE.md`](../SCOPE.md).

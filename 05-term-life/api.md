@@ -87,7 +87,7 @@ stateDiagram-v2
     Lapsed --> [*]
 ```
 
-States are exactly OPIN `policyStatus`. Underwriting outcomes (declined, awaiting medicals) and claim settlement are out of scope here. Underwriting belongs to a future module of this standard and does not exist yet; settlement of a death claim is the same flow as any other claim and lives in Module 11.
+States are exactly OPIN `policyStatus`. Underwriting outcomes (declined, awaiting medicals) and claim settlement are out of scope here. Underwriting is a separate concern from the policy record and is not part of this module; settlement of a death claim is the same flow as any other claim and lives in Module 11.
 
 `[OPIN concern]`: OPIN does not model underwriting (quote, decision, decline). An underwriting module would close this gap. None exists here or in the inherited standard.
 

@@ -74,8 +74,8 @@ erDiagram
 | Pet | address | ref (address) | sheet `pet` | Place of residence of pet |
 | PetBenefit | code | int | sheet `petBenefits` | 38 values |
 
-`[OPIN concern]`: `petKind` covers cat, dog, bird, exotic, and rabbit (5 values). However, `petBreed` enumerates dog breeds only (~320 entries). Cat, rabbit, bird, and exotic-pet breed-level enumerations are not in OPIN. The result is that breed-level data exists for one of the five kinds. On the work list: either drop breed for non-dog kinds explicitly, add per-kind breed enumerations, or model breed as a free-text fallback.
+`[OPIN concern]`: `petKind` covers cat, dog, bird, exotic, and rabbit (5 values). However, `petBreed` enumerates dog breeds only (~320 entries). Cat, rabbit, bird, and exotic-pet breed-level enumerations are not in OPIN. The result is that breed-level data exists for one of the five kinds. Change proposal: either drop breed for non-dog kinds explicitly, add per-kind breed enumerations, or model breed as a free-text fallback.
 
-`[OPIN concern]`: `petCoverage` is missing the per-occurrence indemnity limit field (`indemnityLimitAccident`) that other coverages carry. `annualReimbursementLimit` may be acting as the policy limit, but the relationship to per-occurrence claims is ambiguous. On the work list.
+`[OPIN concern]`: `petCoverage` is missing the per-occurrence indemnity limit field (`indemnityLimitAccident`) that other coverages carry. `annualReimbursementLimit` may be acting as the policy limit, but the relationship to per-occurrence claims is ambiguous. Filed as a change proposal.
 
 `[OPIN concern]`: `petCoverage` types `deductible` as `Number/fFloat` (typo). `[normalisation]` to `Number/Float`. The same lower-f typo appears across multiple sheets (`businessInterruptionCoverage`, `tradeCreditCoverage`, `pet`, `petCoverage`).

@@ -100,6 +100,6 @@ erDiagram
 
 `[OPIN concern]`: The `property` sheet contains a duplicated field name: `numberOfBedrooms` is listed twice. The first row's description (`total number of bathrooms`) makes clear the first occurrence is intended to be `numberOfBathrooms`. `[normalisation]` renders as `numberOfBathrooms` and `numberOfBedrooms`.
 
-`[OPIN concern]`: The OPIN API JSON spells the roof construction enum as `rootConstruction`, while the XLSX correctly uses `roofConstruction`. The XLSX is authoritative. `[normalisation]` uses `roofConstruction`. Correcting the API spelling is inherited defect 2 and is on this standard's work list.
+`[OPIN concern]`: The OPIN API JSON spells the roof construction enum as `rootConstruction`, while the XLSX correctly uses `roofConstruction`. The XLSX is authoritative. `[normalisation]` uses `roofConstruction`. Correcting the API spelling is inherited defect 2 and is filed as a change proposal against the standard.
 
 `[OPIN concern]`: The `property` sheet field `occcupation` (three c's) is misspelled (should be `occupation`). `[normalisation]` applied.

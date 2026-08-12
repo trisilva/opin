@@ -46,18 +46,18 @@ standard and what was added on top of it.
 | `[normalisation]` | A spelling or casing correction to an inherited name, with the original noted beside it. |
 | `[OPIN concern]` | A defect in the inherited standard. Catalogued in [`project/inherited/`](project/inherited/). |
 
-A marker describes provenance and nothing else. `[added]` does not mean the addition is settled: see
-[`KNOWN-GAPS.md`](KNOWN-GAPS.md) for what this version leaves open, and
-[`project/GOVERNANCE.md`](project/GOVERNANCE.md) for how to argue against one.
+A marker describes provenance and nothing else. It says where a thing came from, not how settled it
+is. [`SCOPE.md`](SCOPE.md) holds the scope boundary, and
+[`project/GOVERNANCE.md`](project/GOVERNANCE.md) is how to argue against any of it.
 
 `[normalisation]` marks a correction in the data model only, and it never changes what your
 implementation sends. The API preserves inherited spellings verbatim because they are already on the
-wire. That split is a defect rather than a design, and it is in the caution below.
+wire. The naming rule below says which one governs where.
 
-## Coverage is not uniform across the modules
+## Where the surface came from
 
-The inherited API specification is three-tiered relative to the inherited data standard, and the
-unevenness is inherited rather than designed.
+The inherited API specification covered one module of the twelve. This version carries endpoints for
+all of them, and the provenance markers let a reader see which is which.
 
 - **Motor** is complete: entity schemas and eight collection-level endpoints. Item-level retrieval
   and update are absent and are added here.
@@ -69,16 +69,18 @@ unevenness is inherited rather than designed.
 No new entity schema is introduced anywhere in this version. The schemas are inherited and reused
 unmodified.
 
-## One caution about corrections
+## The naming rule
 
-The data model and the API surface currently take opposite positions on misspelled field names. The
-data model renders the corrected name and notes the original. The API preserves the original
-verbatim, on the grounds that it is already on the wire in every existing implementation.
+**The API governs anything that travels on the wire. The data model governs what a field means.**
 
-Until that is resolved, **the API governs anything that travels on the wire**, and a correction in
-the data model reads as a note about what the field should have been called rather than as what
-your implementation should send. This is a defect rather than a design, and it is in
-[`KNOWN-GAPS.md`](KNOWN-GAPS.md).
+Where the inherited standard misspelled a name, the API preserves the misspelling and the data model
+records the corrected name beside it as a `[normalisation]`. So the normalisation tells you what the
+field was meant to be called, and the API tells you what to send.
+
+The rule protects working integrations. These names are already on the wire everywhere the inherited
+standard was implemented, and correcting them would break those callers to make a document tidier.
+The corrections ship together in one major version instead. The reasoning is in
+[`SCOPE.md`](SCOPE.md).
 
 ## Sources
 

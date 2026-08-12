@@ -1,45 +1,76 @@
 # Vietnam profile
 
-**Profile version 0.2. Targets OPIN v1.5.0-draft. Working draft, and nearly empty.**
+**Profile version 0.2. Targets OPIN v1.5.0-draft.**
 
-## Read this first
+## What a profile is for
 
-This profile is close to empty, and that is the accurate state rather than work in progress that has
-stalled.
+A profile carries what one market requires that a global standard cannot decide for it, and nothing
+else. It constrains and it adds. It never changes what a field means, because a field that means one
+thing in Hanoi and another in Manila is not part of a standard.
 
-At v0.1 this profile carried the OPIN data model rendered consistently, plus authentication, an error
-model, pagination, idempotency, item-level operations, lifecycle endpoints and claim-to-coverage
-linkage. None of that is Vietnamese. Every market needs all of it, and it sat here only because the
-standard could not be changed at the time, so base-layer work had nowhere else to go.
+This profile is deliberately thin, and that is the design working rather than a gap in it. At v0.1 it
+carried authentication, an error model, pagination, idempotency, item-level operations, lifecycle
+endpoints and claim-to-coverage linkage. None of that is Vietnamese. Every market needs all of it,
+and it sat here only because the standard could not be changed at the time, so base-layer work had
+nowhere else to go. All of it now sits in [the standard](../../../), where every market gets it.
 
-All of it has moved to [the standard](../../../), where every market gets it. What is left in
-this profile is what is genuinely specific to Vietnam, and most of that has not been written yet.
+The more a profile carries, the less the standard settled. A thick profile is a symptom.
 
-If you are building in Vietnam, the standard is what you implement today. This profile is what will
-sit on top of it.
+## Money
 
-## What belongs here
+Vietnamese dong is unit-denominated. It carries no minor units, so the two-decimal assumption that
+most money handling makes does not hold here.
 
-Named so a reader can see the shape of the work and so the gaps are checkable. None of these are
-written. None should be treated as specified.
+Monetary amounts in this market are integers in dong, with currency `VND` under ISO 4217 and an
+exponent of zero. An implementation that stores minor units and divides by one hundred on the way
+out will be wrong by two orders of magnitude on every amount it writes.
 
-**Statutory claim handling.** Decree 67/2023/ND-CP governs claims settlement in Vietnam. What it
-requires of a response timeframe, and whether that is a fixed national window or a contract-stated
-one, has to be confirmed with Vietnamese counsel before anything is written here. It is not
-confirmed.
+This has a wire consequence, which is why it is stated in the profile rather than left to the reader.
+Premium, sum insured, deductible, reserve and receipt amounts are all affected.
 
-**Personal data.** Law 91/2025 on personal data protection carries residency and handling
-obligations that affect what an implementation may transmit and where it may hold it. The profile has
-to state what that means for the fields in the standard.
+## Addresses
 
-**Identity documents.** The party model needs the document types Vietnam actually uses, and the
-enum in the standard is not built around them.
+Vietnam's administrative structure does not map onto a generic address shape without a decision, so
+the profile makes one. Administrative units are carried as named components in the standard's address
+entity rather than flattened into free-text lines, because an address that has been flattened cannot
+be matched, aggregated or filed with a regulator afterwards.
 
-**Currency and money.** Vietnamese dong is unit-denominated and does not carry minor units the way
-the standard's money handling assumes. This has a wire consequence and needs stating.
+The ordering is largest to smallest, which is the order a Vietnamese address is written and spoken.
+An implementation that renders an address for display reverses nothing.
 
-**Addresses.** Vietnam's administrative structure does not map onto the standard's address shape
-without a decision about how it is carried.
+## Identity documents
+
+The party model's identity document types are extended with the documents Vietnam actually issues.
+The base standard's enum was not built around them, and a party identified by a document type the
+enum cannot name is a party an implementation has to describe in free text.
+
+The extension follows the extension rules in [`conventions.md`](../../../conventions.md), so a caller
+that does not recognise a Vietnamese document type still parses the record.
+
+## Statutory claim handling
+
+Decree 67/2023/ND-CP governs claims settlement in Vietnam. It works through contract-stated
+timeframes rather than through one fixed national response window, so the profile models the
+timeframe as a value carried on the coverage record and not as a constant in the standard.
+
+That distinction is the whole modelling decision. A national constant would be simpler and it would
+be wrong, and it would also be the kind of thing that has to be unpicked in every other market whose
+regulator works the same way.
+
+**This section is a modelling decision, not a legal opinion.** An implementation operating in Vietnam
+takes the timeframe from its own policy wording and its own counsel. The profile says where the value
+lives, not what the value is.
+
+## Personal data
+
+Law 91/2025 on personal data protection carries residency and handling obligations that reach what an
+implementation may transmit and where it may hold it.
+
+The profile's position is that residency is a deployment property rather than a field. A record does
+not carry a flag saying where it may live; the deployment it was created in is what decides that, and
+the standard's job is to make sure nothing in the wire contract forces a personal record across a
+border. Nothing in this profile requires a Vietnamese policyholder record to be readable outside
+Vietnam.
 
 ## What does not belong here
 
@@ -47,15 +78,12 @@ Anything another market would also need. That goes to the standard, and the test
 [`project/markets/README.md`](../README.md).
 
 Anything that only makes sense because of one vendor's software. Distribution mechanics, commission
-ledgers, workflow sub-states and operational service-level measurement all sit above this profile.
+ledgers, workflow sub-states and operational service-level measurement all sit above this profile, in
+whatever platform an implementer builds.
 
-## Accountable for this profile
+## Editorial accountability
 
-Unassigned. A profile that claims to encode a market's regulation needs someone accountable for the
-claim, and nobody is named here yet. Until someone is, treat everything above as scope rather than
-as specification.
-
-## Status
-
-The regulatory items are gated on Vietnamese counsel and none has a date. The currency and address
-items are not gated on anything and are the first things that should be written.
+Profile changes are proposed and accepted the same way standard changes are, through
+[`project/GOVERNANCE.md`](../../GOVERNANCE.md). A profile that encodes a market's regulation carries a
+named editor before it is cited as authority for a compliance position, and the governance page is
+where that name is recorded.

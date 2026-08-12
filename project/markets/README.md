@@ -38,7 +38,7 @@ not change what an existing field means.
 | :--- | :--- |
 | `README.md` | The market, the regulation that drives the profile, the standard version it targets |
 | `profile.md` | The constraints and additions, one section each, with the legal or operational source for every one |
-| `KNOWN-GAPS.md` | What this version does not settle |
+| `SCOPE.md` | The scope boundary, and what the standard leaves to the platforms above it |
 | `CHANGELOG.md` | Versions of this profile |
 
 `profile.md` carries six sections, in this order, and each entry in every one of them names its

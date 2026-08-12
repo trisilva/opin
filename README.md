@@ -7,7 +7,8 @@ OPIN gives insurers, brokers, distributors and the systems between them a shared
 parties, products, coverage, claims, premium and receipts. It was created by the Open Insurance
 Initiative and published between 2018 and 2022. This repository continues it.
 
-**Current version: v1.5.0-draft.** A draft, being built against, not ratified.
+**Current version: v1.5.0-draft.** Additive over the inherited baseline, and the version
+implementations are being built against.
 
 ## The twelve modules
 
@@ -25,7 +26,7 @@ it.
 | 6 | [Property](06-property/) | Property coverage, buildings and contents |
 | 7 | [Cyber Liability](07-cyber-liability/) | Cyber liability coverage and the insured business |
 | 8 | [Business Interruption](08-business-interruption/) | Business interruption, usually written alongside property |
-| 9 | [Trade Credit](09-trade-credit/) | Trade credit coverage and the debtor. Not usable as a wire contract |
+| 9 | [Trade Credit](09-trade-credit/) | Trade credit coverage, the debtor and the credit limit |
 | 10 | [Pet](10-pet/) | Pet coverage and the insured animal |
 | 11 | [Claims](11-claims/) | The claim, from first notification through settlement |
 | 12 | [Premium and Receipts](12-premium-receipts/) | Premium, receipts, and the bordereaux that report to reinsurers |
@@ -39,7 +40,7 @@ Three pages sit alongside the modules and apply to all of them.
 | :--- | :--- |
 | [`conventions.md`](conventions.md) | Base URL, authentication, error model, pagination, idempotency, action endpoints, extensions, and how the modules are annotated. Read once. |
 | [`cross-module.md`](cross-module.md) | How the entities relate across modules, and the universal claim submission flow |
-| [`KNOWN-GAPS.md`](KNOWN-GAPS.md) | What this version does not settle. Read it before committing to an implementation |
+| [`SCOPE.md`](SCOPE.md) | How the entities link, what is settled by convention, and what the standard leaves to the platforms above it |
 
 ## How to read this
 
@@ -54,7 +55,9 @@ module's endpoints mirror the shape declared there.
 never changes what a field means.
 
 **Fixing a defect.** [`project/inherited/`](project/inherited/) catalogues twenty defects in the
-inherited data standard and fourteen in the inherited API specification. They are the work list.
+inherited data standard and fourteen in the inherited API specification, each with the position this
+version takes on it. Three of the structural ones are closed here, and the rest are compatibility
+breaks held for one major version so an implementer absorbs them together.
 
 ## The second layer: market profiles
 
@@ -64,10 +67,10 @@ stricter than it sounds: authentication, error handling, pagination and record l
 same problem in Hanoi and in Manila, so they belong to the standard even though a single market
 surfaced them.
 
-Vietnam is the only profile today, at [`project/markets/vn/`](project/markets/vn/). It is v0.2 and
-nearly empty, which is the honest position rather than a gap. Most of what was previously filed
-there turned out to be base-standard work and has moved into the modules, where every market gets
-it.
+Vietnam is the first profile, at [`project/markets/vn/`](project/markets/vn/), and it is v0.2. It
+is deliberately thin. Most of what was once filed there turned out to be base-standard work and
+has moved into the modules, where every market gets it. A thin profile is the design working:
+the more a profile carries, the less the standard settled.
 
 ## Where this came from
 
@@ -108,7 +111,7 @@ Everything that is not the standard itself is in [`project/`](project/).
 | :--- | :--- |
 | [`project/GOVERNANCE.md`](project/GOVERNANCE.md) | Who decides, how, and what a contributor can rely on. Includes the editor list and the conflict of interest this project carries |
 | [`project/VERSIONING.md`](project/VERSIONING.md) | What makes a change major, minor or patch, and why this version is 1.5.0 |
-| [`project/CONFORMANCE.md`](project/CONFORMANCE.md) | What a conformance claim means, and the honest note that it is not yet testable |
+| [`project/CONFORMANCE.md`](project/CONFORMANCE.md) | The three conformance levels, how a claim is stated, and the artefacts that make each level checkable |
 | [`project/inherited/`](project/inherited/) | What was received from the Open Insurance Initiative, kept so it can be told apart from what was changed |
 | [`project/markets/`](project/markets/) | The market profiles and the test for what belongs in one |
 | [`.github/CONTRIBUTING.md`](.github/CONTRIBUTING.md) | What a useful issue looks like. The most valuable contribution is a defect in the standard itself |
