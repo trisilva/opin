@@ -1,8 +1,10 @@
 # Module 7: Cyber Liability
 
-Resources, endpoints, primary flow, lifecycle and routing. The entities and fields are in [`data-model.md`](data-model.md). Conventions that apply to every module are in [`../conventions.md`](../conventions.md).
+The endpoints, the flow that binds a policy, the lifecycle and the error paths. The entities and
+fields are in [`data-model.md`](data-model.md), and the rules that apply on every call are in
+[`../conventions.md`](../conventions.md).
 
-### Resource model
+## Resource model
 
 ```mermaid
 classDiagram
@@ -13,7 +15,7 @@ classDiagram
         +DateTime expiryDate
         +PolicyStatus status
         +int indemnityLimitPolicy
-        +bool claimsOccurrence
+        +ClaimsOccurrence claimsOccurrence
         +CyberCoverageCategory[] scope
         +create() CyberLiabilityCoverage
         +retrieve(id) CyberLiabilityCoverage
@@ -31,25 +33,27 @@ classDiagram
     CyberLiabilityCoverage --> Business : covers
 ```
 
-### Endpoints
+## Endpoints
 
-`[added]`: OPIN publishes the cyberLiabilityCoverage and business schemas but no endpoints.
+| Endpoint | Scope | What it does |
+| :--- | :--- | :--- |
+| `POST /cyberLiabilityCoverage` | admin | Bind a policy against an existing business |
+| `GET /cyberLiabilityCoverage` | developer | List, filterable by `policyNumber` |
+| `GET /cyberLiabilityCoverage/{id}` | developer | Retrieve one policy |
+| `PUT /cyberLiabilityCoverage/{id}` | admin | Replace a policy |
+| `POST /cyberLiabilityCoverage/{id}:endorse` | admin | Amend a policy in force |
+| `POST /cyberLiabilityCoverage/{id}:cancel` | admin | End a policy before expiry |
+| `POST /cyberLiabilityCoverage/{id}:renew` | admin | Issue a new coverage record for a new term |
+| `POST /business` | admin | Create a business |
+| `GET /business` | developer | List businesses |
+| `GET /business/{id}` | developer | Retrieve one business |
+| `PUT /business/{id}` | admin | Replace a business |
 
-- `POST /cyberLiabilityCoverage` (admin)
-- `GET /cyberLiabilityCoverage` (developer)
-- `GET /cyberLiabilityCoverage/{id}` (developer)
-- `PUT /cyberLiabilityCoverage/{id}` (admin)
-- `POST /cyberLiabilityCoverage/{id}:endorse` (admin)
-- `POST /cyberLiabilityCoverage/{id}:cancel` (admin)
-- `POST /cyberLiabilityCoverage/{id}:renew` (admin)
-- `POST /business` (admin)
-- `GET /business` (developer)
-- `GET /business/{id}` (developer)
-- `PUT /business/{id}` (admin)
+There is no incident resource. A cyber loss is filed through `POST /claim` like every other coverage
+type. Breach-notification and regulator-notification deadlines sit above the standard, because they
+are operational service-level measurement. See [`../SCOPE.md`](../SCOPE.md).
 
-`[OPIN concern]`: OPIN publishes no `cyberIncident` schema, so a cyber loss is described through the common `Claim` entity like every other coverage type. Breach-notification and regulator-notification timelines are out of scope by design rather than pending. They are operational service-level measurement, which sits above the standard in whatever platform an implementer builds. See [`SCOPE.md`](../SCOPE.md).
-
-### Primary flow: Bind a cyber liability policy
+## Primary flow: bind a cyber liability policy
 
 ```mermaid
 sequenceDiagram
@@ -69,7 +73,7 @@ sequenceDiagram
     Gateway-->>Client: 201 Created
 ```
 
-### Lifecycle
+## Lifecycle
 
 ```mermaid
 stateDiagram-v2
@@ -83,7 +87,9 @@ stateDiagram-v2
     Lapsed --> [*]
 ```
 
-### Routing and error handling
+**This diagram is normative.** A transition it does not draw is not one an implementation may make.
+
+## Errors
 
 ```mermaid
 flowchart TD

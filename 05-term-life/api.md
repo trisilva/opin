@@ -1,8 +1,10 @@
 # Module 5: Term Life
 
-Resources, endpoints, primary flow, lifecycle and routing. The entities and fields are in [`data-model.md`](data-model.md). Conventions that apply to every module are in [`../conventions.md`](../conventions.md).
+The endpoints, the flow that binds a policy, the lifecycle and the error paths. The entities and
+fields are in [`data-model.md`](data-model.md), and the rules that apply on every call are in
+[`../conventions.md`](../conventions.md).
 
-### Resource model
+## Resource model
 
 ```mermaid
 classDiagram
@@ -37,23 +39,31 @@ classDiagram
     TermLifeCoverage --> Beneficiary : pays
 ```
 
-### Endpoints
+`termLifeCoverage` carries a multi-valued `beneficiary` reference. The beneficiary records
+themselves are created and maintained through [core parties](../01-core-parties/), because a
+beneficiary is a party like any other and can be named on more than one policy.
 
-`[added]`: OPIN publishes the termLifeCoverage and lifeInsured schemas but no endpoints. Beneficiary CRUD lives in Module 1.
+## Endpoints
 
-- `POST /termLifeCoverage` (admin)
-- `GET /termLifeCoverage` (developer)
-- `GET /termLifeCoverage/{id}` (developer)
-- `PUT /termLifeCoverage/{id}` (admin)
-- `POST /termLifeCoverage/{id}:endorse` (admin)
-- `POST /termLifeCoverage/{id}:cancel` (admin)
-- `POST /termLifeCoverage/{id}:renew` (admin)
-- `POST /lifeInsured` (admin)
-- `GET /lifeInsured` (developer)
-- `GET /lifeInsured/{id}` (developer)
-- `PUT /lifeInsured/{id}` (admin)
+Beneficiaries are created and maintained through [core parties](../01-core-parties/), not here.
 
-### Primary flow: Bind a term life policy with riders
+| Endpoint | Scope | What it does |
+| :--- | :--- | :--- |
+| `POST /termLifeCoverage` | admin | Bind a policy against an existing life insured |
+| `GET /termLifeCoverage` | developer | List, filterable by `policyNumber` |
+| `GET /termLifeCoverage/{id}` | developer | Retrieve one policy |
+| `PUT /termLifeCoverage/{id}` | admin | Replace a policy |
+| `POST /termLifeCoverage/{id}:endorse` | admin | Amend a policy in force, including adding or removing a rider |
+| `POST /termLifeCoverage/{id}:cancel` | admin | Surrender the policy |
+| `POST /termLifeCoverage/{id}:renew` | admin | Issue a new coverage record for a new term |
+| `POST /lifeInsured` | admin | Create a life insured |
+| `GET /lifeInsured` | developer | List |
+| `GET /lifeInsured/{id}` | developer | Retrieve one |
+| `PUT /lifeInsured/{id}` | admin | Replace one |
+
+A death claim goes to `POST /claim` like any other claim. See [Claims](../11-claims/).
+
+## Primary flow: bind a policy with riders
 
 ```mermaid
 sequenceDiagram
@@ -73,7 +83,7 @@ sequenceDiagram
     Gateway-->>Client: 201 Created
 ```
 
-### Lifecycle
+## Lifecycle
 
 ```mermaid
 stateDiagram-v2
@@ -87,11 +97,19 @@ stateDiagram-v2
     Lapsed --> [*]
 ```
 
-States are exactly OPIN `policyStatus`. Underwriting outcomes (declined, awaiting medicals) and claim settlement are out of scope here. Underwriting is a separate concern from the policy record and is not part of this module; settlement of a death claim is the same flow as any other claim and lives in Module 11.
+**This diagram is normative.** A transition it does not draw is not one an implementation may make.
 
-`[OPIN concern]`: OPIN does not model underwriting (quote, decision, decline). An underwriting module would close this gap. None exists here or in the inherited standard.
+Two things this lifecycle does not contain, and both surprise people.
 
-### Routing and error handling
+**There is no underwriting.** No quote, no decision, no declined state, no awaiting-medicals state.
+The record begins at in force, so everything between an application and a bound policy happens
+before the standard sees it. This is a genuine gap rather than a scope decision, and nothing in the
+standard closes it today.
+
+**There is no settled state.** A death claim does not move the policy. It runs through
+[Claims](../11-claims/) on the shared claim lifecycle, exactly as a motor or travel claim does.
+
+## Errors
 
 ```mermaid
 flowchart TD

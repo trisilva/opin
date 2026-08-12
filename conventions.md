@@ -1,86 +1,107 @@
 # Conventions
 
-Read this once. Everything here applies to every module. Nothing that only one market needs belongs
-here, because a market requirement goes in a [market profile](project/markets/README.md) instead.
+Read this once. Everything here applies to every module, and none of it is repeated in them.
 
-## API conventions
+Nothing that only one market needs belongs here. A market requirement goes in a
+[market profile](project/markets/README.md) instead.
 
-Each line is annotated with whether OPIN declares it or whether it is added here.
+## Base URL and versioning
 
-- **Base URL**: `https://api.opin-vn.{tld}/v1` where `{tld}` matches the deploying tenant. `[added]`: OPIN does not specify a base URL convention beyond the SwaggerHub virtserver host.
-- **Versioning**: URL-prefix versioning (`/v1`, `/v2`). `[OPIN]`: OPIN's `info.version` is `1.0`; URL prefix is implicit in the SwaggerHub server entry.
-- **Authentication**: OAuth 2.0 Bearer tokens. `[added]`: OPIN's spec is silent on auth. OAuth 2.0 is adopted with two role scopes that mirror OPIN's two declared tags:
-  - `opin-vn.admin` (full write, mirrors OPIN's `admins` tag).
-  - `opin-vn.developer` (read-only, mirrors OPIN's `developers` tag).
-  No third operator scope is introduced. State-changing operations live under `opin-vn.admin` only.
-- **Content-Type**: `application/json` for all requests and responses. `[OPIN]`: OPIN declares `application/json` on every request and response body.
-- **Error model**: RFC 7807 Problem Details. `[added]`: OPIN does not declare an error model beyond bare `400`, `409` descriptions on its four endpoints.
-- **Pagination**: cursor-based via `?cursor=` and `Link` header on collection GETs. `[added]`: OPIN declares `skip` and `limit` query parameters on its four GET endpoints. This supersedes them with cursor-based pagination, which scales better and is stable under concurrent writes. The OPIN `skip`/`limit` form remains accepted as a fallback for backward compatibility.
-- **Idempotency**: `Idempotency-Key` header on POST and PUT. `[added]`: OPIN does not declare idempotency.
-- **Action endpoints**: state transitions are exposed as `POST /resource/{id}:action` (colon-action style). `[added]`: OPIN declares no action endpoints. The colon-action form is used for endorsements, cancellations, renewals, settlements, reopenings, and refunds because they map to OPIN data-standard concepts (`endorsementType` enum, `policyStatus` transitions, `claimStatus` transitions, `receiptType` reversals) but are not pure CRUD.
+```
+https://api.opin-vn.{tld}/v1
+```
 
-`[OPIN concern]`: four of the conventions above (auth, error model, pagination, idempotency) are
-entirely absent from OPIN v1.0. They are declared above, because
-without them every implementer diverges.
+`{tld}` matches the deploying tenant. The version is a path prefix, so `/v1` and `/v2` are separate
+surfaces and a caller pinned to one is never moved by a change to the other.
+
+The host carries `opin-vn`, a market name that no longer describes what is served there. Use it as
+written. Changing a base URL breaks every caller, which makes it a major change however small the
+edit looks. See [`SCOPE.md`](SCOPE.md) for when held changes of this kind ship.
+
+## Authentication
+
+OAuth 2.0 bearer tokens. Two scopes, and they divide on whether a call changes anything:
+
+| Scope | What it permits |
+| :--- | :--- |
+| `opin-vn.developer` | Read. Every `GET` |
+| `opin-vn.admin` | Write. Every `POST`, `PUT` and action endpoint |
+
+There is no third scope and no per-resource permission. If you need finer control than read against
+write, it belongs in your own authorisation layer rather than in the standard's.
+
+Every endpoint in every module names the scope it requires.
+
+## Content type
+
+`application/json` on every request and response body.
+
+## Errors
+
+Errors are [RFC 7807](https://www.rfc-editor.org/rfc/rfc7807) problem documents. That means a JSON
+body with a stable machine-readable `type`, a human-readable `title` and `detail`, and the HTTP
+status repeated inside it, rather than a bare status code and a free-text string.
+
+The point of using a declared error format is that a client can branch on `type` without parsing
+prose, and prose can then be improved without breaking that client.
+
+## Pagination
+
+Collection `GET`s are cursor-paged. Send `?cursor=` and follow the `Link` header for the next page.
+
+Cursor paging is used rather than offset paging because a cursor stays correct while other callers
+are writing. With `skip` and `limit`, a record inserted during your walk shifts everything after it,
+so you silently see a record twice or miss it entirely. A cursor points at a position in the data
+rather than a count from the start.
+
+`skip` and `limit` remain accepted, so existing callers keep working.
+
+## Idempotency
+
+Send an `Idempotency-Key` header on `POST` and `PUT`.
+
+The key lets you retry a request without wondering whether the first attempt landed. A replayed key
+returns the original response instead of creating a second record. This matters most where a
+duplicate is expensive rather than untidy: issuing one policy twice, or paying one claim twice.
+
+## Action endpoints
+
+State transitions are `POST /resource/{id}:action`, with a colon:
+
+```
+POST /motorCoverage/{id}:cancel
+POST /claim/{id}:settle
+```
+
+Endorsements, cancellations, renewals, settlements, reopenings and refunds all take this form. They
+are not create, read, update or delete. Each one is a specific transition with its own rules about
+when it is legal, and forcing them into `PUT` would hide that behind a field change.
+
+Which transitions are legal is drawn in each module's lifecycle diagram, and **those diagrams are
+normative**. A transition a diagram does not draw is not one an implementation may make.
 
 ## Extensions
 
 An implementation may carry fields the standard does not define. Two rules make that safe.
 
-An extension field never reuses a name the standard defines, and never changes what a defined field
-means. An extension is additive or it is a fork.
+**An extension never reuses a name the standard defines, and never changes what a defined field
+means.** An extension is additive or it is a fork.
 
-A caller that receives a field it does not recognise ignores it rather than failing. This is
-required in both directions and it is what lets the standard add optional fields in a minor
-version.
+**A caller that receives a field it does not recognise ignores it rather than failing.** This is
+required in both directions, and it is what lets the standard add optional fields without breaking
+anyone.
 
-## Annotation
+## Field names on the wire
 
-Every line in a module carries its provenance, so a reader can tell what came from the published
-standard and what was added on top of it.
+**The API governs anything that travels. The data model governs what a field means.**
 
-| Marker | Meaning |
-| :--- | :--- |
-| `[OPIN]` | In the published standard verbatim. Unchanged. |
-| `[added]` | Not in the published standard. Added here. Where a schema is inherited and only the endpoint over it is new, the surrounding note says so. |
-| `[normalisation]` | A spelling or casing correction to an inherited name, with the original noted beside it. |
-| `[OPIN concern]` | A defect in the inherited standard. Catalogued in [`project/inherited/`](project/inherited/). |
+Several inherited field names are misspelled. They stay misspelled, because they are already on the
+wire in every existing implementation and correcting them would break working integrations to make a
+document tidier. The data model pages show the corrected name so a reader knows what was meant, and
+what you send is the original.
 
-A marker describes provenance and nothing else. It says where a thing came from, not how settled it
-is. [`SCOPE.md`](SCOPE.md) holds the scope boundary, and
-[`project/GOVERNANCE.md`](project/GOVERNANCE.md) is how to argue against any of it.
-
-`[normalisation]` marks a correction in the data model only, and it never changes what your
-implementation sends. The API preserves inherited spellings verbatim because they are already on the
-wire. The naming rule below says which one governs where.
-
-## Where the surface came from
-
-The inherited API specification covered one module of the twelve. This version carries endpoints for
-all of them, and the provenance markers let a reader see which is which.
-
-- **Motor** is complete: entity schemas and eight collection-level endpoints. Item-level retrieval
-  and update are absent and are added here.
-- **Cross-cutting modules** (1, 2, 11, 12) have entity schemas and no endpoints. The endpoints here
-  mirror the motor pattern over those schemas.
-- **The other coverage modules** (4 to 10) have entity schemas and no endpoints, on the same
-  footing.
-
-No new entity schema is introduced anywhere in this version. The schemas are inherited and reused
-unmodified.
-
-## The naming rule
-
-**The API governs anything that travels on the wire. The data model governs what a field means.**
-
-Where the inherited standard misspelled a name, the API preserves the misspelling and the data model
-records the corrected name beside it as a `[normalisation]`. So the normalisation tells you what the
-field was meant to be called, and the API tells you what to send.
-
-The rule protects working integrations. These names are already on the wire everywhere the inherited
-standard was implemented, and correcting them would break those callers to make a document tidier.
-The corrections ship together in one major version instead. The reasoning is in
-[`SCOPE.md`](SCOPE.md).
+Each module's data model lists the affected names for that module. The corrections ship together in
+one major version rather than one at a time. See [`SCOPE.md`](SCOPE.md).
 
 ## Sources
 

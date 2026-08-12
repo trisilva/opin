@@ -1,8 +1,10 @@
 # Module 4: Travel
 
-Resources, endpoints, primary flow, lifecycle and routing. The entities and fields are in [`data-model.md`](data-model.md). Conventions that apply to every module are in [`../conventions.md`](../conventions.md).
+The endpoints, the flow that binds a policy, the lifecycle and the error paths. The entities and
+fields are in [`data-model.md`](data-model.md), and the rules that apply on every call are in
+[`../conventions.md`](../conventions.md).
 
-### Resource model
+## Resource model
 
 ```mermaid
 classDiagram
@@ -20,6 +22,7 @@ classDiagram
         +float tripCancellation
         +create() TravelCoverage
         +retrieve(id) TravelCoverage
+        +endorse(id) TravelCoverage
         +cancel(id) TravelCoverage
     }
     class Traveller {
@@ -35,21 +38,25 @@ classDiagram
     TravelCoverage --> Traveller : covers
 ```
 
-### Endpoints
+## Endpoints
 
-`[added]`: OPIN publishes the travelCoverage and traveller schemas but no endpoints. CRUD is added here, modelled on the motor pattern.
+| Endpoint | Scope | What it does |
+| :--- | :--- | :--- |
+| `POST /travelCoverage` | admin | Bind a policy against one or more existing travellers |
+| `GET /travelCoverage` | developer | List, filterable by `policyNumber` |
+| `GET /travelCoverage/{id}` | developer | Retrieve one policy |
+| `PUT /travelCoverage/{id}` | admin | Replace a policy |
+| `POST /travelCoverage/{id}:endorse` | admin | Amend a policy in force, including extending the term |
+| `POST /travelCoverage/{id}:cancel` | admin | End a policy before expiry |
+| `POST /traveller` | admin | Create a traveller |
+| `GET /traveller` | developer | List travellers |
+| `GET /traveller/{id}` | developer | Retrieve one traveller |
+| `PUT /traveller/{id}` | admin | Replace a traveller |
 
-- `POST /travelCoverage` (admin)
-- `GET /travelCoverage` (developer)
-- `GET /travelCoverage/{id}` (developer)
-- `PUT /travelCoverage/{id}` (admin)
-- `POST /travelCoverage/{id}:cancel` (admin)
-- `POST /traveller` (admin)
-- `GET /traveller` (developer)
-- `GET /traveller/{id}` (developer)
-- `PUT /traveller/{id}` (admin)
+Extending a trip is an endorsement rather than a new policy, which matters on an annual multi-trip
+policy where the customer is still mid-journey.
 
-### Primary flow: Bind a single-trip travel policy
+## Primary flow: bind a single-trip policy
 
 ```mermaid
 sequenceDiagram
@@ -69,7 +76,7 @@ sequenceDiagram
     Gateway-->>Client: 201 Created
 ```
 
-### Lifecycle
+## Lifecycle
 
 ```mermaid
 stateDiagram-v2
@@ -82,9 +89,13 @@ stateDiagram-v2
     Lapsed --> [*]
 ```
 
-States are exactly OPIN `policyStatus`. Trip expiry is a derived property from `expiryDate` and is not a separate lifecycle state.
+**This diagram is normative.** A transition it does not draw is not one an implementation may make.
 
-### Routing and error handling
+The four states are the shared `policyStatus` set. A trip simply ending is not one of them: expiry
+is derived from `expiryDate`, so a policy past its expiry date is still recorded as in force rather
+than moving to a state of its own.
+
+## Errors
 
 ```mermaid
 flowchart TD

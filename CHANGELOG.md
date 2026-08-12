@@ -16,6 +16,45 @@ The version stays on the 1.x line because nothing inherited was removed or renam
 1.3 and 1.4 so the Open Insurance Initiative keeps room on its own line. See
 [`VERSIONING.md`](project/VERSIONING.md).
 
+### Five internal contradictions closed
+
+Each of these was a place where two parts of the standard said different things, so an implementer
+had to pick one and could not know what a counterparty had picked. All five are additive: nothing is
+renamed or removed, and no inherited wire name changes.
+
+- **`claimsOccurrence` is the two-value enumeration everywhere.** It was a Boolean on
+  `cyberLiabilityCoverage` and the enumeration on `propertyCoverage` and
+  `businessInterruptionCoverage`. A Boolean cannot carry which of claims-occurring and claims-made
+  applies without a convention agreed out of band, and reading it wrongly assigns a claim to the
+  wrong policy year. Cyber is the line where it matters most, because a breach is routinely found
+  long after the intrusion. Closes concern 3.
+- **`policyWording` carries `version` and `effectiveDate`.** It held a name alone, which meant a
+  wording could not be traced to the version in force on a given date. That is a routine compliance
+  ask, and the API resource model already showed both fields. Closes concern 16.
+- **`termLifeCoverage` carries a multi-valued `beneficiary` reference.** The `Beneficiary` entity
+  existed in module 1 and term life is the case it was built for, and no field connected them. The
+  resource model drew the relationship the schema did not have.
+- **`businessInterruptionCoverage` carries `propertyRef`.** The cover only makes sense attached to a
+  premises, and nothing linked it to one.
+- **`travelCoverage` has an `:endorse` action.** Every other coverage type had one, and travel's own
+  lifecycle diagram showed an extension reached through it while the endpoint list did not carry it.
+
+### The documentation was rewritten for readers who are new to insurance
+
+The modules assumed an insurance vocabulary most of their readers do not have. A new
+[`concepts.md`](concepts.md) defines it once: the parties, the policy, the money, the claim and
+reinsurance, plus the abbreviations the modules use without expanding.
+
+Each module now opens by saying what that line of business is and how its model is shaped, then
+lists what to watch when implementing it. Provenance annotations (`[OPIN]`, `[added]`,
+`[normalisation]`, `[OPIN concern]`) are gone from the module pages, along with the defect numbers
+they carried, because that record belongs in this changelog and in
+[`project/inherited/`](project/inherited/) rather than inline in a page someone is reading to build
+against. Every warning survived the move, restated as a property of the standard today.
+
+Lifecycle diagrams are now marked normative on every module, which is one of the two conditions in
+[`VERSIONING.md`](project/VERSIONING.md) for leaving draft.
+
 ### Two version lines became one
 
 The Open Insurance Initiative published the data standard at v1.2.1 and the API specification at

@@ -26,12 +26,9 @@ Three things follow from it, and all three are normative:
 - An implementation assigns policy numbers from one sequence across every coverage type it
   writes.
 
-The inherited baseline left this implicit. It declared no foreign key from `Claim` to coverage
-and none from `Receipt` to the policy or claim that produced it, and it inferred the
-relationship from correlation between `claimNumber` and `policyNumber`. Correlation is not a
-contract, so this version states the constraint that the model was already assuming. The
-catalogue entries behind that decision are in
-[`project/inherited/concerns-v1.2.1.md`](project/inherited/concerns-v1.2.1.md).
+No foreign key carries this. `Claim` has no field pointing at its coverage and `Receipt` has none
+pointing at the policy or claim that produced it. The uniqueness rule is what makes the association
+deterministic, which is why it is stated as a constraint rather than left as a convention.
 
 ## Lifecycle is declared, not implied
 
@@ -39,26 +36,24 @@ catalogue entries behind that decision are in
 diagrams in each module's API page walk the legal transitions. Those diagrams are normative. A
 transition they do not draw is not a transition an implementation may make.
 
-This is stricter than the inherited baseline, which published the value sets and left the
-transitions to the reader. Two implementations that agreed on every field could still disagree
-about whether a policy may move from lapsed back to active, which is the kind of disagreement
-that surfaces in production rather than in review.
+Publishing a value set without the transitions is not enough. Two implementations can agree on every
+field and still disagree about whether a policy may move from lapsed back to active, and that is the
+kind of disagreement that surfaces in production rather than in review.
 
 ## Field naming
 
 The API design is authoritative for anything that travels on the wire. The data model is
 authoritative for what a field means.
 
-Where the inherited standard misspelled a field name, the wire keeps the misspelling and the
-data model records the corrected name beside it as a `[normalisation]`. So `creditLimitUtiilized`,
-`issueDtae`, `GrosslLossReserve`, `countryOfRegisteration` and `medicalConditon` are what an
-implementation sends, and the normalisation tells a reader what the field was meant to be
-called.
+Several field names are misspelled. The wire keeps the misspelling and the data model shows the
+corrected name beside it. So `creditLimitUtiilized`, `issueDtae`, `GrosslLossReserve`,
+`countryOfRegisteration` and `medicalConditon` are what an implementation sends, and the corrected
+form tells a reader what the field was meant to be called.
 
-The rule reads oddly until you see what it protects. These names are already on the wire in
-every existing implementation. Correcting them would break working integrations to make a
-document tidier, which is a trade the standard does not make. The corrections ship with the
-other compatibility breaks, in one major version, so an implementer absorbs them together.
+The rule reads oddly until you see what it protects. These names are on the wire in every existing
+implementation. Correcting them would break working integrations to make a document tidier, which is
+a trade the standard does not make. The corrections ship with the other compatibility breaks, in one
+major version, so an implementer absorbs them together.
 
 ## Compatibility breaks, and when they ship
 
@@ -71,11 +66,8 @@ Use them as written. Changing a base URL or a scope name breaks every caller, wh
 major change however small the edit looks, and this version is additive. See
 [`VERSIONING.md`](project/VERSIONING.md) for what that means and when the held breaks ship.
 
-These three are the only place the retired profile name survives on the wire. The annotation
-markers that also carried it were prose rather than contract, so they were swept:
-`[OPIN-VN extension to API; OPIN schema reused]` is now `[added]`, and `[OPIN-VN normalisation]`
-is now `[normalisation]`. A reader meeting an `opin-vn` string has one question to ask rather
-than two. If it travels on the wire it is held, and if it does not it is already gone.
+These three are the only place that name survives. Anywhere else you meet an `opin-vn` string, it is
+on the wire and it is held for a major version.
 
 ## Out of scope by design
 
@@ -98,12 +90,15 @@ The standard will also never carry a pricing model or a rating engine. Pricing i
 insurers compete, and a standard that settled it would be a standard nobody could adopt. That
 exclusion is permanent and it is not a gap.
 
-## Coverage of the API surface
+## The API surface
 
-The inherited API specification covered one module. Motor carried endpoints, and everywhere
-else the baseline published entity schemas with no surface over them.
+All twelve modules carry endpoints, and they carry the same ones. Create and list on a collection,
+retrieve and replace on an item, plus the lifecycle actions each coverage type needs. Motor declares
+the pattern and everything else mirrors it, which is why reading
+[Motor](03-motor/) first is worth the time even if you are building something else.
 
-This version carries endpoints for all twelve, mirroring the CRUD and lifecycle pattern motor
-declared. Those additions are annotated inline as `[added]`, so a reader can tell what came
-from the baseline and what this version supplies. No new entity schemas are introduced. The
-vocabulary is the baseline's, and the surface over it is this version's work.
+No entity schema is invented anywhere. The vocabulary is inherited unmodified and the surface over
+it is this standard's work.
+
+Where the two source documents disagree, the disagreement is recorded on the module page rather than
+silently resolved. [Term life](05-term-life/) carries the sharpest case.

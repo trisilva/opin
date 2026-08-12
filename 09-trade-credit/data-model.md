@@ -1,10 +1,13 @@
 # Module 9: Trade Credit
 
-Entities, fields, enumerated values and relationships. The API surface for this module is in [`api.md`](api.md).
+The entities, fields, enumerated values and relationships. The endpoints over them are in
+[`api.md`](api.md), and the terms used throughout are defined in
+[Insurance concepts](../concepts.md).
 
-Covers trade credit insurance: tradeCreditCoverage with debtor-specific limits, deductibles, sectors, and waiting periods; debtor entity with parent company, financials, credit rating; coverage type enum (Whole Turnover, Key Accounts, Single Buyer, Transactional).
-
-OPIN sources: `tradeCreditCoverage`, `debtor`, `tradeCreditTpe` (sheet name typo), `tradeCreditPeril`, `legalEntity`.
+**`tradeCreditCoverage`** is the policy held by a seller, and **`debtor`** is the buyer whose
+failure to pay is the insured event. The buyer is not a party to the policy and need not know it
+exists, which is why `debtor` carries financial statements, a credit rating and a parent company:
+the insurer is underwriting a company that never signed anything.
 
 ```mermaid
 erDiagram
@@ -72,44 +75,45 @@ erDiagram
     DEBTOR ||--|| LEGAL_ENTITY : "legal form"
 ```
 
-### Field annotations (Module 9)
+## Selected fields
 
-| Entity | Field | Type | OPIN source | Notes |
-|---|---|---|---|---|
-| TradeCreditCoverage | inceptionDate | DateTime (ISO 8601) | `[added]` | The common coverage lifecycle, carried here as it is on every other coverage type |
-| TradeCreditCoverage | expiryDate | DateTime (ISO 8601) | `[added]` |  |
-| TradeCreditCoverage | status | enum (policyStatus) | `[added]` | Same value set and same transitions as every other coverage |
-| TradeCreditCoverage | discountAmount | Number/float | `[added]` |  |
-| TradeCreditCoverage | premiumRate | Number/float | `[added]` |  |
-| TradeCreditCoverage | grossWrittenPremium | Number/float | `[added]` |  |
-| TradeCreditCoverage | salesTax | Number/float | `[added]` |  |
-| TradeCreditCoverage | brokeragePercentage | Number/float | `[added]` |  |
-| TradeCreditCoverage | brokerageAmount | Number/float | `[added]` |  |
-| TradeCreditCoverage | premiumPaymentFrequency | enum (premiumPaymentFrequency) | `[added]` |  |
-| TradeCreditCoverage | endorsementID | Text | `[added]` |  |
-| TradeCreditCoverage | endorsementDate | DateTime (ISO 8601) | `[added]` |  |
-| TradeCreditCoverage | endorsementType | enum (endorsementType) | `[added]` |  |
-| TradeCreditCoverage | debtor | ref (Debtor) | sheet `tradeCreditCoverage` |  |
-| TradeCreditCoverage | tradeCreditType | enum (tradeCreditType) | sheet `tradeCreditTpe` | OPIN sheet name `tradeCreditTpe` is a typo; `[normalisation]` to `tradeCreditType` |
-| TradeCreditCoverage | creditLimit | Number/integer | sheet `tradeCreditCoverage` |  |
-| TradeCreditCoverage | creditLimitUtilized | Number/integer | sheet `tradeCreditCoverage` | OPIN spelling `creditLimitUtiilized` (double-i); `[normalisation]` applied |
-| TradeCreditCoverage | maxCreditPeriod | Number/integer | sheet `tradeCreditCoverage` | Days |
-| TradeCreditCoverage | waitingPeriod | Number/integer | sheet `tradeCreditCoverage` |  |
-| TradeCreditCoverage | overdueWithDebtor | Number/integer | sheet `tradeCreditCoverage` |  |
-| TradeCreditCoverage | sectors | Text (UK SIC) | sheet `tradeCreditCoverage` |  |
-| TradeCreditCoverage | entitytype | enum (legalEntity) | sheet `tradeCreditCoverage` | OPIN field name `entitytype` (lowercase t); `[normalisation]` to `entityType` |
-| Debtor | ultimateParentCompany | Text | sheet `debtor` |  |
-| Debtor | legalForm | enum (legalEntity) | sheet `debtor` |  |
-| Debtor | netAssets | Number/integer | sheet `debtor` | Formula in OPIN: (Total Fixed Assets + Total Current Assets) - (Total Current Liabilities + Total Long Term Liabilities) |
-| Debtor | annualizedTurnover | Number/integer | sheet `debtor` |  |
-| Debtor | accountsNextDueDate | Date | sheet `debtor` |  |
-| Debtor | latestFinancialsDate | Date | sheet `debtor` |  |
-| Debtor | creditRating | Text | sheet `debtor` | S&P, AM Best, Fitch |
+`tradeCreditCoverage` carries the standard policy lifecycle in full: `inceptionDate`, `expiryDate`,
+`status`, `discountAmount`, `premiumRate`, `grossWrittenPremium`, `salesTax`,
+`brokeragePercentage`, `brokerageAmount`, `premiumPaymentFrequency`, `endorsementID`,
+`endorsementDate` and `endorsementType`. Same names, same types and same value sets as every other
+coverage type, so anything that already handles motor or property handles these unchanged. The
+fields below are the ones specific to this line.
 
-`[added]`: the thirteen policy lifecycle fields above are supplied by this version. The inherited standard omitted every one of them from `tradeCreditCoverage`, alone among the eight coverage types, which left the entity describing a credit limit with no policy around it. They carry the same names, types and value sets they carry on every other coverage, so an implementation that already handles motor or property handles these unchanged. Closes inherited defect 7.
+| Entity | Field | Type | What it means |
+|---|---|---|---|
+| TradeCreditCoverage | tradeCreditType | enum | How much of the seller's book is covered. Whole turnover (every customer), key accounts (the largest few), single buyer (one), or transactional (one shipment) |
+| TradeCreditCoverage | peril | enum (tradeCreditPeril) | Which causes of non-payment count. Bankruptcy, insolvency, protracted default, political risk |
+| TradeCreditCoverage | creditLimit | Number/integer | The most the insurer will cover against this buyer |
+| TradeCreditCoverage | creditLimitUtilized | Number/integer | How much of the limit is currently in use. Headroom is the difference. Spelled `creditLimitUtiilized` on the wire |
+| TradeCreditCoverage | maxCreditPeriod | Number/integer | The longest payment term the cover allows, in days. Invoice a buyer on longer terms and the debt falls outside the policy |
+| TradeCreditCoverage | waitingPeriod | Number/integer | How long a debt must stay unpaid before it can be claimed. Protracted default is time passing rather than an event, so it needs a threshold |
+| TradeCreditCoverage | overdueWithDebtor | Number/integer | How much is currently past due with this buyer |
+| TradeCreditCoverage | sectors | Text (UK SIC) | The industries covered, as SIC codes |
+| TradeCreditCoverage | entityType | enum (legalEntity) | The buyer's legal form. Spelled `entitytype` at source |
+| Debtor | ultimateParentCompany | Text | The group parent. A subsidiary's creditworthiness often rests on whoever stands behind it |
+| Debtor | legalForm | enum (legalEntity) | Sole trader, private limited, public limited, general partnership or limited partnership. This decides who can be pursued for the debt |
+| Debtor | netAssets | Number/integer | Fixed plus current assets, less current plus long-term liabilities |
+| Debtor | annualizedTurnover | Number/integer | Revenue, which sizes what an exposure to this buyer means |
+| Debtor | latestFinancialsDate | Date | When the accounts being relied on were drawn up. Stale accounts are a risk signal in themselves |
+| Debtor | accountsNextDueDate | Date | When the next filing is due |
+| Debtor | creditRating | Text | Rating from S&P, AM Best or Fitch |
 
-`[OPIN concern]`: OPIN sheet name `tradeCreditTpe` is a typo (should be `tradeCreditType`). `[normalisation]` applies the corrected spelling but the original sheet name is recorded here against the defect.
+## What to watch
 
-`[OPIN concern]`: OPIN field `creditLimitUtiilized` on `tradeCreditCoverage` is misspelled (double-i, should be `creditLimitUtilized`). `[normalisation]` applied.
+**Two names are misspelled on the wire and stay as they are.** The type enumeration is
+`tradeCreditTpe` and the utilisation field is `creditLimitUtiilized`, with a doubled `i`. Both are
+already implemented everywhere the standard was adopted, so correcting them would break working
+integrations. Send them as written. A third, `entitytype` with a lowercase `t`, is shown corrected
+above.
 
-`[OPIN concern]`: `tradeCreditPeril` includes `political risks` (code 3), which overlaps with broader political risk insurance products in `productCatalog`. The line between trade credit and political risk insurance is not clean in OPIN. Clarifying the scope is filed as a change proposal.
+**Political risk overlaps with a separate product.** `tradeCreditPeril` code 3 is political risk,
+and the product catalogue carries political risk insurance as its own line of business. Nothing
+draws the boundary between them. Decide which you are selling before you rely on the peril.
+
+**`waitingPeriod` has no state behind it.** Nothing signals entering or leaving it. Treat it as a
+calculation against the loss date at the point a claim is filed.

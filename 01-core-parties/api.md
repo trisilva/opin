@@ -1,8 +1,10 @@
 # Module 1: Core Parties and Entities
 
-Resources, endpoints, primary flow, lifecycle and routing. The entities and fields are in [`data-model.md`](data-model.md). Conventions that apply to every module are in [`../conventions.md`](../conventions.md).
+The endpoints, the flow that onboards a party, the lifecycle and the error paths. The entities and
+fields are in [`data-model.md`](data-model.md), and the rules that apply on every call are in
+[`../conventions.md`](../conventions.md).
 
-### Resource model
+## Resource model
 
 ```mermaid
 classDiagram
@@ -64,30 +66,36 @@ classDiagram
     Beneficiary --> Address : has
 ```
 
-`[OPIN concern]`: Address is an embedded value object in the OPIN data standard. It is not a top-level resource and this standard does not expose it as one. Address fields are only ever sent and received inline within their owning entity.
+Address has no class of its own here because it is not a resource. It is embedded in whichever
+entity owns it, and it travels inline on every request and response that carries one.
 
-### Endpoints
+## Endpoints
 
-`[added]`: OPIN publishes the InsuranceEntity, Personal, Commercial, Beneficiary, and address schemas but no endpoints. CRUD endpoints are added here, modelled on the motor `/vehicle`, `/driver` pattern.
+Four resources, all the same shape: create and list on the collection, retrieve and replace on the
+item. `opin-vn.admin` is the write scope and `opin-vn.developer` is read-only.
 
-- `POST /insuranceEntity` (admin)
-- `GET /insuranceEntity` (developer), search by name or registration number
-- `GET /insuranceEntity/{id}` (developer)
-- `PUT /insuranceEntity/{id}` (admin)
-- `POST /personal` (admin)
-- `GET /personal` (developer), search
-- `GET /personal/{id}` (developer)
-- `PUT /personal/{id}` (admin)
-- `POST /commercial` (admin)
-- `GET /commercial` (developer), search
-- `GET /commercial/{id}` (developer)
-- `PUT /commercial/{id}` (admin)
-- `POST /beneficiary` (admin)
-- `GET /beneficiary` (developer)
-- `GET /beneficiary/{id}` (developer)
-- `PUT /beneficiary/{id}` (admin)
+| Endpoint | Scope | What it does |
+| :--- | :--- | :--- |
+| `POST /insuranceEntity` | admin | Create an insurer, broker or agent |
+| `GET /insuranceEntity` | developer | List, searchable by name or registration number |
+| `GET /insuranceEntity/{id}` | developer | Retrieve one |
+| `PUT /insuranceEntity/{id}` | admin | Replace one |
+| `POST /personal` | admin | Create an individual party |
+| `GET /personal` | developer | List, searchable |
+| `GET /personal/{id}` | developer | Retrieve one |
+| `PUT /personal/{id}` | admin | Replace one |
+| `POST /commercial` | admin | Create a corporate party |
+| `GET /commercial` | developer | List, searchable |
+| `GET /commercial/{id}` | developer | Retrieve one |
+| `PUT /commercial/{id}` | admin | Replace one |
+| `POST /beneficiary` | admin | Create a beneficiary |
+| `GET /beneficiary` | developer | List |
+| `GET /beneficiary/{id}` | developer | Retrieve one |
+| `PUT /beneficiary/{id}` | admin | Replace one |
 
-### Primary flow: Onboard a Personal party
+There is no `/address`. See the note above.
+
+## Primary flow: onboard an individual party
 
 ```mermaid
 sequenceDiagram
@@ -106,7 +114,12 @@ sequenceDiagram
     Gateway-->>Client: 201 Created
 ```
 
-### Lifecycle
+Two things in that flow are worth pulling out. A party is deduplicated on `idType` plus `idNumber`
+together, not on name, because names repeat and are spelled inconsistently. And an
+`Idempotency-Key` replay returns the original record with a 200 rather than creating a second party,
+which is what makes a retried onboarding safe.
+
+## Lifecycle
 
 ```mermaid
 stateDiagram-v2
@@ -115,9 +128,12 @@ stateDiagram-v2
     Active --> [*] : record retained, never hard-deleted
 ```
 
-`[OPIN concern]`: OPIN does not declare a party lifecycle. This standard keeps the lifecycle conservative: a party record exists or it does not. Status flags such as KYC status, suspension, or closure are out of scope at this version and live in implementer-specific extensions.
+The lifecycle is deliberately minimal: a party record exists or it does not, and it is never
+deleted. There is no suspended state, no closed state and no identity-check status. Those describe
+where a party sits in one operator's process rather than what the party is, so they belong in your
+own extension fields.
 
-### Routing and error handling
+## Errors
 
 ```mermaid
 flowchart TD

@@ -1,8 +1,10 @@
 # Module 10: Pet
 
-Resources, endpoints, primary flow, lifecycle and routing. The entities and fields are in [`data-model.md`](data-model.md). Conventions that apply to every module are in [`../conventions.md`](../conventions.md).
+The endpoints, the flow that binds a policy, the lifecycle and the error paths. The entities and
+fields are in [`data-model.md`](data-model.md), and the rules that apply on every call are in
+[`../conventions.md`](../conventions.md).
 
-### Resource model
+## Resource model
 
 ```mermaid
 classDiagram
@@ -32,23 +34,23 @@ classDiagram
     PetCoverage --> Pet : covers
 ```
 
-### Endpoints
+## Endpoints
 
-`[added]`: OPIN publishes both the petCoverage and pet schemas but no endpoints.
+| Endpoint | Scope | What it does |
+| :--- | :--- | :--- |
+| `POST /petCoverage` | admin | Bind a policy against an existing pet |
+| `GET /petCoverage` | developer | List, filterable by `policyNumber` |
+| `GET /petCoverage/{id}` | developer | Retrieve one policy |
+| `PUT /petCoverage/{id}` | admin | Replace a policy |
+| `POST /petCoverage/{id}:endorse` | admin | Amend a policy in force |
+| `POST /petCoverage/{id}:cancel` | admin | End a policy before expiry |
+| `POST /petCoverage/{id}:renew` | admin | Issue a new coverage record for a new term |
+| `POST /pet` | admin | Create a pet |
+| `GET /pet` | developer | List pets |
+| `GET /pet/{id}` | developer | Retrieve one pet |
+| `PUT /pet/{id}` | admin | Replace a pet |
 
-- `POST /petCoverage` (admin)
-- `GET /petCoverage` (developer)
-- `GET /petCoverage/{id}` (developer)
-- `PUT /petCoverage/{id}` (admin)
-- `POST /petCoverage/{id}:endorse` (admin)
-- `POST /petCoverage/{id}:cancel` (admin)
-- `POST /petCoverage/{id}:renew` (admin)
-- `POST /pet` (admin)
-- `GET /pet` (developer)
-- `GET /pet/{id}` (developer)
-- `PUT /pet/{id}` (admin)
-
-### Primary flow: Bind a pet policy
+## Primary flow: bind a pet policy
 
 ```mermaid
 sequenceDiagram
@@ -65,7 +67,7 @@ sequenceDiagram
     Pet-->>Gateway: 201 {policyNumber, status: in force}
 ```
 
-### Lifecycle
+## Lifecycle
 
 ```mermaid
 stateDiagram-v2
@@ -79,9 +81,13 @@ stateDiagram-v2
     Lapsed --> [*]
 ```
 
-`[OPIN concern]`: OPIN ships a `waitingPeriod` field on petCoverage but, as with tradeCreditCoverage, no lifecycle state for it. This standard treats the waiting period as a derived calculation against `inceptionDate` when a claim is evaluated; the policy itself is `in force` from binding.
+**This diagram is normative.** A transition it does not draw is not one an implementation may make.
 
-### Routing and error handling
+There is no waiting state, although `waitingPeriod` is a field on the record. The policy is in force
+from binding, and the waiting period is calculated against `inceptionDate` when a claim is
+evaluated. [Trade credit](../09-trade-credit/) handles its own waiting period the same way.
+
+## Errors
 
 ```mermaid
 flowchart TD

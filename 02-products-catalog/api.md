@@ -1,8 +1,10 @@
 # Module 2: Products and Catalog
 
-Resources, endpoints, primary flow, lifecycle and routing. The entities and fields are in [`data-model.md`](data-model.md). Conventions that apply to every module are in [`../conventions.md`](../conventions.md).
+The endpoints, the flow that registers a product, the lifecycle and the error paths. The entities
+and fields are in [`data-model.md`](data-model.md), and the rules that apply on every call are in
+[`../conventions.md`](../conventions.md).
 
-### Resource model
+## Resource model
 
 ```mermaid
 classDiagram
@@ -34,21 +36,28 @@ classDiagram
     Product --> PolicyWording : wording
 ```
 
-### Endpoints
+`policyWording` carries `version` and `effectiveDate` as well as a name. Together they are what let
+you evidence which wording governed a policy sold on a given date, which is a routine compliance
+ask and the reason the entity is more than a label.
 
-`[added]`: OPIN publishes the Product and policyWording schemas but no endpoints. CRUD on Product and a read endpoint are added here for the productCatalog enum lookup.
+## Endpoints
 
-- `POST /product` (admin)
-- `GET /product` (developer), filter by lineOfBusiness, productModel, currency
-- `GET /product/{id}` (developer)
-- `PUT /product/{id}` (admin)
-- `GET /productCatalog` (developer), list 65 OPIN productCatalog entries
-- `GET /policyWording` (developer)
-- `GET /policyWording/{id}` (developer)
-- `POST /policyWording` (admin)
-- `PUT /policyWording/{id}` (admin)
+`productCatalog` is read-only. It is the standard's fixed list of 65 lines of business, not
+something an implementation adds to.
 
-### Primary flow: Register a new product
+| Endpoint | Scope | What it does |
+| :--- | :--- | :--- |
+| `POST /product` | admin | Register a product |
+| `GET /product` | developer | List, filterable by `lineOfBusiness`, `productModel` and `currency` |
+| `GET /product/{id}` | developer | Retrieve one product |
+| `PUT /product/{id}` | admin | Replace a product |
+| `GET /productCatalog` | developer | List the 65 lines of business |
+| `POST /policyWording` | admin | Register a wording |
+| `GET /policyWording` | developer | List wordings |
+| `GET /policyWording/{id}` | developer | Retrieve one wording |
+| `PUT /policyWording/{id}` | admin | Replace a wording |
+
+## Primary flow: register a product
 
 ```mermaid
 sequenceDiagram
@@ -67,7 +76,7 @@ sequenceDiagram
     Gateway-->>Client: 201 Created
 ```
 
-### Lifecycle
+## Lifecycle
 
 ```mermaid
 stateDiagram-v2
@@ -76,9 +85,12 @@ stateDiagram-v2
     Registered --> [*] : record retained
 ```
 
-`[OPIN concern]`: OPIN does not declare a Product lifecycle (no draft, active, deprecated states). This standard keeps the lifecycle conservative. Product activation and deprecation are operational concerns to be encoded in implementer-specific extensions.
+A product exists or it does not. There is no draft state and no deprecated state, so nothing in the
+standard says whether a product is open for new business today. That is an operational question
+about one insurer's catalogue rather than a fact about the product, so carry it as an extension
+field.
 
-### Routing and error handling
+## Errors
 
 ```mermaid
 flowchart TD

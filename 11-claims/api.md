@@ -1,8 +1,10 @@
 # Module 11: Claims
 
-Resources, endpoints, primary flow, lifecycle and routing. The entities and fields are in [`data-model.md`](data-model.md). Conventions that apply to every module are in [`../conventions.md`](../conventions.md).
+The endpoints, the flow from first notification to settlement, the lifecycle and the error paths.
+The entities and fields are in [`data-model.md`](data-model.md), and the rules that apply on every
+call are in [`../conventions.md`](../conventions.md).
 
-### Resource model
+## Resource model
 
 ```mermaid
 classDiagram
@@ -42,27 +44,30 @@ classDiagram
     Claim --> ClaimsBordereau : ceded into
 ```
 
-`[added]`: the inherited Claim schema carries no foreign-key field to the policy or coverage being claimed against, which left implementations associating the two out of band. This version declares the linkage instead. `policyNumber` is globally unique across the namespace and travels in the claim payload, and `/claim` accepts it as a collection filter, so a claim resolves to exactly one coverage record across all eight coverage types. That constraint is what makes the polymorphic `POST /claim` work at all. See [`../SCOPE.md`](../SCOPE.md).
+**`policyNumber` is what links a claim to its policy.** It is globally unique across the namespace,
+it travels in the claim payload, and `/claim` accepts it as a collection filter. That constraint is
+what makes one polymorphic endpoint possible across all eight coverage types, and it is set out in
+[`../SCOPE.md`](../SCOPE.md).
 
-### Endpoints
+## Endpoints
 
-OPIN endpoints (kept verbatim, attributed to OPIN, polymorphic across coverages):
+`POST /claim` accepts a claim against any coverage type. The caller does not say which kind of
+policy it is, because `policyNumber` already determines that.
 
-- `POST /claim` (admin) `[OPIN]`
-- `GET /claim` (developer) `[OPIN]`
+| Endpoint | Scope | What it does |
+| :--- | :--- | :--- |
+| `POST /claim` | admin | File a claim against any coverage type |
+| `GET /claim` | developer | List, filterable by `policyNumber` and `claimNumber` |
+| `GET /claim/{id}` | developer | Retrieve one claim |
+| `PUT /claim/{id}` | admin | Replace a claim, which is how an adjuster revises the reserve and the liability share |
+| `POST /claim/{id}/documents` | admin | Append to the claim's documents |
+| `POST /claim/{id}:settle` | admin | Pay and close. Records the amount and the payment method |
+| `POST /claim/{id}:reopen` | admin | Reopen a closed claim and set `reopenDate` |
+| `POST /claimsBordereau` | admin | Create a reinsurance report |
+| `GET /claimsBordereau` | developer | List, filterable by `treatyReference` |
+| `GET /claimsBordereau/{id}` | developer | Retrieve one report |
 
-Added here, on the same OPIN schemas:
-
-- `GET /claim/{id}` (developer) `[added]`
-- `PUT /claim/{id}` (admin) `[added]`
-- `POST /claim/{id}/documents` (admin) `[added]`: append to OPIN `documents` array
-- `POST /claim/{id}:settle` (admin) `[added]`: transitions claimStatus from open to closed and records payment amount/method
-- `POST /claim/{id}:reopen` (admin) `[added]`: transitions claimStatus from closed to reopened, sets reopenDate
-- `POST /claimsBordereau` (admin) `[added]`
-- `GET /claimsBordereau` (developer) `[added]`: filter by treatyReference
-- `GET /claimsBordereau/{id}` (developer) `[added]`
-
-### Primary flow: Submit a claim (FNOL through settlement)
+## Primary flow: first notification through settlement
 
 ```mermaid
 sequenceDiagram
@@ -89,7 +94,7 @@ sequenceDiagram
     Claim-->>Gateway: 200 {status: closed}
 ```
 
-### Lifecycle
+## Lifecycle
 
 ```mermaid
 stateDiagram-v2
@@ -100,9 +105,21 @@ stateDiagram-v2
     Closed --> [*]
 ```
 
-States are exactly OPIN `claimStatus` (open, closed, reopened). All operational sub-states (triage, investigation, awaiting documents, awaiting payment, fraud review) are implementer-side workflow concerns and do not appear on the wire.
+**This diagram is normative.** A transition it does not draw is not one an implementation may make.
 
-### Routing and error handling
+Three states: open, closed, reopened. Settlement closes a claim and it does not end it, because
+something further can always emerge. A reopened claim settles again, and a second payment is
+recorded against it.
+
+Triage, investigation, awaiting documents, awaiting payment and fraud review are not states here and
+will not become states. They describe where a claim sits in one operator's process, which is not
+something two insurers need to agree on to exchange a claim.
+
+## Errors
+
+The check that matters most is the first one. A policy has to have been in force on the **loss
+date**, not on the date the claim was filed, so a claim can be admitted against a policy that has
+since expired and refused against one that is currently active.
 
 ```mermaid
 flowchart TD

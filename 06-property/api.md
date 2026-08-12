@@ -1,8 +1,10 @@
 # Module 6: Property
 
-Resources, endpoints, primary flow, lifecycle and routing. The entities and fields are in [`data-model.md`](data-model.md). Conventions that apply to every module are in [`../conventions.md`](../conventions.md).
+The endpoints, the flow that binds a policy, the lifecycle and the error paths. The entities and
+fields are in [`data-model.md`](data-model.md), and the rules that apply on every call are in
+[`../conventions.md`](../conventions.md).
 
-### Resource model
+## Resource model
 
 ```mermaid
 classDiagram
@@ -36,23 +38,26 @@ classDiagram
     PropertyCoverage --> Property : insures
 ```
 
-### Endpoints
+## Endpoints
 
-`[added]`: OPIN publishes the propertyCoverage and property schemas but no endpoints.
+| Endpoint | Scope | What it does |
+| :--- | :--- | :--- |
+| `POST /propertyCoverage` | admin | Bind a policy against one or more existing properties |
+| `GET /propertyCoverage` | developer | List, filterable by `policyNumber` |
+| `GET /propertyCoverage/{id}` | developer | Retrieve one policy |
+| `PUT /propertyCoverage/{id}` | admin | Replace a policy |
+| `POST /propertyCoverage/{id}:endorse` | admin | Amend a policy in force |
+| `POST /propertyCoverage/{id}:cancel` | admin | End a policy before expiry |
+| `POST /propertyCoverage/{id}:renew` | admin | Issue a new coverage record for a new term |
+| `POST /property` | admin | Create a property |
+| `GET /property` | developer | List properties |
+| `GET /property/{id}` | developer | Retrieve one property |
+| `PUT /property/{id}` | admin | Replace a property |
 
-- `POST /propertyCoverage` (admin)
-- `GET /propertyCoverage` (developer)
-- `GET /propertyCoverage/{id}` (developer)
-- `PUT /propertyCoverage/{id}` (admin)
-- `POST /propertyCoverage/{id}:endorse` (admin)
-- `POST /propertyCoverage/{id}:cancel` (admin)
-- `POST /propertyCoverage/{id}:renew` (admin)
-- `POST /property` (admin)
-- `GET /property` (developer)
-- `GET /property/{id}` (developer)
-- `PUT /property/{id}` (admin)
+[Business interruption](../08-business-interruption/) is normally written alongside this cover on
+the same premises, and it is a separate policy record.
 
-### Primary flow: Bind a home and contents policy
+## Primary flow: bind a buildings and contents policy
 
 ```mermaid
 sequenceDiagram
@@ -69,7 +74,7 @@ sequenceDiagram
     Property-->>Gateway: 201 {policyNumber}
 ```
 
-### Lifecycle
+## Lifecycle
 
 ```mermaid
 stateDiagram-v2
@@ -83,7 +88,12 @@ stateDiagram-v2
     Lapsed --> [*]
 ```
 
-### Routing and error handling
+**This diagram is normative.** A transition it does not draw is not one an implementation may make.
+
+Endorsing keeps the policy in force. Renewing writes a second record rather than moving this one
+forward.
+
+## Errors
 
 ```mermaid
 flowchart TD

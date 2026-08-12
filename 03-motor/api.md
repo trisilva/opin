@@ -1,8 +1,10 @@
 # Module 3: Motor
 
-Resources, endpoints, primary flow, lifecycle and routing. The entities and fields are in [`data-model.md`](data-model.md). Conventions that apply to every module are in [`../conventions.md`](../conventions.md).
+The endpoints, the flow that binds a policy, the lifecycle and the error paths. The entities and
+fields are in [`data-model.md`](data-model.md), and the rules that apply on every call are in
+[`../conventions.md`](../conventions.md).
 
-### Resource model
+## Resource model
 
 ```mermaid
 classDiagram
@@ -50,32 +52,39 @@ classDiagram
     Driver --> DrivingLicence : holds
 ```
 
-### Endpoints
+## Endpoints
 
-OPIN spec endpoints (kept verbatim, motor only, attributed to OPIN):
+Three resources, each with the same shape: create and list on the collection, retrieve and replace
+on the item. `motorCoverage` adds three lifecycle actions that CRUD cannot express.
 
-- `POST /vehicle` (admin) `[OPIN]`
-- `GET /vehicle` (developer) `[OPIN]`
-- `POST /claim` (admin) `[OPIN]`: polymorphic across coverages, see Module 11
-- `GET /claim` (developer) `[OPIN]`
-- `POST /driver` (admin) `[OPIN]`
-- `GET /driver` (developer) `[OPIN]`
-- `POST /motorCoverage` (admin) `[OPIN]`
-- `GET /motorCoverage` (developer) `[OPIN]`
+Each endpoint names the scope it requires. `opin-vn.admin` is the write scope and
+`opin-vn.developer` is read-only. See [`../conventions.md`](../conventions.md).
 
-Added here, on the same OPIN schemas:
+| Endpoint | Scope | What it does |
+| :--- | :--- | :--- |
+| `POST /vehicle` | admin | Create a vehicle |
+| `GET /vehicle` | developer | List vehicles |
+| `GET /vehicle/{id}` | developer | Retrieve one vehicle |
+| `PUT /vehicle/{id}` | admin | Replace a vehicle |
+| `POST /driver` | admin | Create a driver |
+| `GET /driver` | developer | List drivers |
+| `GET /driver/{id}` | developer | Retrieve one driver |
+| `PUT /driver/{id}` | admin | Replace a driver |
+| `POST /motorCoverage` | admin | Bind a policy against an existing vehicle and driver |
+| `GET /motorCoverage` | developer | List coverage, filterable by `policyNumber` |
+| `GET /motorCoverage/{id}` | developer | Retrieve one coverage record |
+| `PUT /motorCoverage/{id}` | admin | Replace a coverage record |
+| `POST /motorCoverage/{id}:endorse` | admin | Amend a policy in force. Body carries an `endorsementType` |
+| `POST /motorCoverage/{id}:cancel` | admin | End a policy before expiry |
+| `POST /motorCoverage/{id}:renew` | admin | Issue a new coverage record for a new term |
 
-- `GET /vehicle/{id}` (developer) `[added]`
-- `PUT /vehicle/{id}` (admin) `[added]`
-- `GET /driver/{id}` (developer) `[added]`
-- `PUT /driver/{id}` (admin) `[added]`
-- `GET /motorCoverage/{id}` (developer) `[added]`
-- `PUT /motorCoverage/{id}` (admin) `[added]`
-- `POST /motorCoverage/{id}:endorse` (admin) `[added]`: body carries OPIN `endorsementType`
-- `POST /motorCoverage/{id}:cancel` (admin) `[added]`
-- `POST /motorCoverage/{id}:renew` (admin) `[added]`
+Claims against a motor policy go to `POST /claim`, which serves every coverage type from one
+endpoint. See [Claims](../11-claims/).
 
-### Primary flow: Bind a motor policy
+## Primary flow: bind a motor policy
+
+The vehicle and the driver are created first, and the coverage refers to both. Three writes rather
+than one, because a vehicle and a driver outlive the policy that binds them.
 
 ```mermaid
 sequenceDiagram
@@ -101,7 +110,7 @@ sequenceDiagram
     Gateway-->>Client: 201 Created
 ```
 
-### Lifecycle
+## Lifecycle
 
 ```mermaid
 stateDiagram-v2
@@ -116,9 +125,19 @@ stateDiagram-v2
     Lapsed --> [*]
 ```
 
-States are exactly OPIN `policyStatus` (in force, cancelled, lapsed, extended). Endorsement is an operation on an in-force policy that mutates fields under an OPIN `endorsementType` value but does not introduce a new lifecycle state. Renewal issues a new record rather than transitioning the existing one.
+**This diagram is normative.** A transition it does not draw is not one an implementation may make.
 
-### Routing and error handling
+Four states, and they are the `policyStatus` value set: in force, cancelled, lapsed, extended. Two
+of the operations behave in ways worth stating plainly.
+
+**Endorsing does not change the state.** An endorsement amends a policy that stays in force
+throughout. It applies an `endorsementType` and mutates fields, and the policy is in force before
+and after.
+
+**Renewing does not transition the record.** It writes a second `motorCoverage` with its own policy
+number, and the original runs to its own expiry. Two records, not one moved forward.
+
+## Errors
 
 ```mermaid
 flowchart TD
@@ -135,3 +154,9 @@ flowchart TD
     G -->|Yes| H[Persist with policyStatus=in force]
     H --> I[201 Created]
 ```
+
+Every error body is an RFC 7807 problem document, described in
+[`../conventions.md`](../conventions.md). The distinction to note is between 404 and 400 here: a
+missing referenced record is a 404 because the caller named something that does not exist, and an
+expired licence or an inverted policy term is a 400 because the caller named something real and
+described it wrongly.

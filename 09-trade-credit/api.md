@@ -1,8 +1,10 @@
 # Module 9: Trade Credit
 
-Resources, endpoints, primary flow, lifecycle and routing. The entities and fields are in [`data-model.md`](data-model.md). Conventions that apply to every module are in [`../conventions.md`](../conventions.md).
+The endpoints, the flow that binds a policy, the lifecycle and the error paths. The entities and
+fields are in [`data-model.md`](data-model.md), and the rules that apply on every call are in
+[`../conventions.md`](../conventions.md).
 
-### Resource model
+## Resource model
 
 ```mermaid
 classDiagram
@@ -36,23 +38,26 @@ classDiagram
     TradeCreditCoverage --> Debtor : covers
 ```
 
-### Endpoints
+## Endpoints
 
-`[added]`: OPIN publishes the tradeCreditCoverage and debtor schemas but no endpoints.
+| Endpoint | Scope | What it does |
+| :--- | :--- | :--- |
+| `POST /tradeCreditCoverage` | admin | Bind a policy against an existing debtor |
+| `GET /tradeCreditCoverage` | developer | List, filterable by `policyNumber` |
+| `GET /tradeCreditCoverage/{id}` | developer | Retrieve one policy |
+| `PUT /tradeCreditCoverage/{id}` | admin | Replace a policy |
+| `POST /tradeCreditCoverage/{id}:endorse` | admin | Amend a policy in force. This is how a credit limit is raised or lowered, under an `endorsementType` of addition or deletion |
+| `POST /tradeCreditCoverage/{id}:cancel` | admin | End a policy before expiry |
+| `POST /tradeCreditCoverage/{id}:renew` | admin | Issue a new coverage record for a new term |
+| `POST /debtor` | admin | Create a debtor |
+| `GET /debtor` | developer | List debtors |
+| `GET /debtor/{id}` | developer | Retrieve one debtor |
+| `PUT /debtor/{id}` | admin | Replace a debtor |
 
-- `POST /tradeCreditCoverage` (admin)
-- `GET /tradeCreditCoverage` (developer)
-- `GET /tradeCreditCoverage/{id}` (developer)
-- `PUT /tradeCreditCoverage/{id}` (admin)
-- `POST /tradeCreditCoverage/{id}:endorse` (admin), supports credit limit changes via OPIN `endorsementType=addition/increase` or `deletion/decrease`
-- `POST /tradeCreditCoverage/{id}:cancel` (admin)
-- `POST /tradeCreditCoverage/{id}:renew` (admin)
-- `POST /debtor` (admin)
-- `GET /debtor` (developer)
-- `GET /debtor/{id}` (developer)
-- `PUT /debtor/{id}` (admin)
+Credit limits move often, and `:endorse` is the only route. There is no separate limit endpoint, so
+a limit change is an endorsement on a policy that stays in force.
 
-### Primary flow: Bind a single-buyer trade credit policy
+## Primary flow: bind a single-buyer policy
 
 ```mermaid
 sequenceDiagram
@@ -70,7 +75,7 @@ sequenceDiagram
     TC-->>Gateway: 201 {policyNumber}
 ```
 
-### Lifecycle
+## Lifecycle
 
 ```mermaid
 stateDiagram-v2
@@ -84,9 +89,13 @@ stateDiagram-v2
     Lapsed --> [*]
 ```
 
-`[OPIN concern]`: OPIN ships a `waitingPeriod` field on tradeCreditCoverage but no operational signal for entering or exiting it. This standard does not invent a waiting-period state; the waiting period is a derived calculation against the loss-event date when a claim is filed.
+**This diagram is normative.** A transition it does not draw is not one an implementation may make.
 
-### Routing and error handling
+There is no waiting-period state, although `waitingPeriod` is a field on the record. The waiting
+period is calculated against the loss date at the point a claim is filed, and the policy does not
+move while it runs.
+
+## Errors
 
 ```mermaid
 flowchart TD

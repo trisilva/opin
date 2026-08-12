@@ -8,11 +8,9 @@ A profile carries what one market requires that a global standard cannot decide 
 else. It constrains and it adds. It never changes what a field means, because a field that means one
 thing in Hanoi and another in Manila is not part of a standard.
 
-This profile is deliberately thin, and that is the design working rather than a gap in it. At v0.1 it
-carried authentication, an error model, pagination, idempotency, item-level operations, lifecycle
-endpoints and claim-to-coverage linkage. None of that is Vietnamese. Every market needs all of it,
-and it sat here only because the standard could not be changed at the time, so base-layer work had
-nowhere else to go. All of it now sits in [the standard](../../../), where every market gets it.
+This profile is deliberately thin, and that is the design working rather than a gap in it.
+Authentication, error handling, pagination, idempotency and record lifecycle are the same problem in
+Hanoi as in Manila, so they belong to [the standard](../../../) where every market gets them.
 
 The more a profile carries, the less the standard settled. A thick profile is a symptom.
 

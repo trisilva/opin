@@ -1,10 +1,19 @@
 # Module 3: Motor
 
-Entities, fields, enumerated values and relationships. The API surface for this module is in [`api.md`](api.md).
+The entities, fields, enumerated values and relationships. The endpoints over them are in
+[`api.md`](api.md), and the terms used throughout are defined in
+[Insurance concepts](../concepts.md).
 
-Covers motor insurance: Vehicle (the most data-rich entity in OPIN, with 100+ properties spanning registration, OEM, telematics, ADAS, and condition signals), Driver, motorCoverage, and motor-specific perils.
+Six entities carry motor. **`motorCoverage`** is the policy: term, status, premium, perils and
+deductibles. **`Vehicle`** is the thing insured and it is by far the largest entity in the standard.
+**`Driver`** is the person being priced, with **`drivingLicence`**, **`conviction`** and
+**`medicalCondition`** hanging off it because all three change what the risk costs. **`motorPeril`**
+is the enumerated set of causes a motor policy will pay for.
 
-OPIN sources: `motorCoverage`, `Vehicle`, `Driver`, `motorPeril`, `bodyType`, `fuelType`, `aiClassification`, `vehicleUse`, `drivingLicence`, `conviction`, `offenceCode`, `medicalCondition`, `workStatus`, `notifiableCondition`, `distanceUnit`.
+Read `Vehicle` as three groups rather than one list. Static identity and registration (plate, VIN,
+chassis, country) barely change. Manufacturer specification (body, fuel, power, doors, autonomy
+level) is fixed at build. Telematics and condition (position, speed, tyre pressure, brake wear,
+airbag state) change constantly, and are only present at all when `consentGranted` is true.
 
 ```mermaid
 erDiagram
@@ -91,7 +100,7 @@ erDiagram
         enum fuelType
         enum aiClassification "SAE International"
         enum vehicleUse
-        int yearlyMilage
+        int yearlyMileage
         string vehicleBrand "KBA HSN/TSN"
         string vehicleModel
         date modelYear
@@ -121,9 +130,9 @@ erDiagram
         bool hasTheftDetection
         float currentMileage
         float currentMileageDynamic
-        float yearlyMilageDynamic
-        float highwayYearlyMilageDynamic
-        float dailyMilageDynamic
+        float yearlyMileageDynamic
+        float highwayYearlyMileageDynamic
+        float dailyMileageDynamic
         string serviceHistory
         bool serviceDue
         int timeToService
@@ -137,8 +146,8 @@ erDiagram
         float brakePedalSpeed
         bool performanceMode
         bool emergencyBraking
-        bool engnitionOn
-        bool engnitionOff
+        bool ignitionOn
+        bool ignitionOff
         float ignitionOnTime
         float ignitionOffTime
         float longitude
@@ -149,7 +158,7 @@ erDiagram
         bool hornIsActive
         float drivingSpeed
         bool wheelSpin
-        float decelrationRate
+        float decelerationRate
         float steeringSpeedTurn
         bool laneDepartureWarning
         bool adasAbsIsActive
@@ -199,52 +208,79 @@ erDiagram
     MOTOR_COVERAGE ||--|{ MOTOR_PERIL : "covers"
 ```
 
-### Field annotations (Module 3)
+This diagram carries corrected field names throughout, because the data model governs what a field
+means. Several of those names travel misspelled, and what you actually send is in
+[What to watch](#what-to-watch) below. Take wire spellings from there or from
+[`api.md`](api.md), never from this diagram.
 
-| Entity | Field | Type | OPIN source | Notes |
-|---|---|---|---|---|
-| MotorCoverage | policyNumber | Text | sheet `motorCoverage` |  |
-| MotorCoverage | inceptionDate | DateTime (ISO 8601) | sheet `motorCoverage` |  |
-| MotorCoverage | expiryDate | DateTime (ISO 8601) | sheet `motorCoverage` |  |
-| MotorCoverage | status | enum (policyStatus) | sheet `motorCoverage` |  |
-| MotorCoverage | premiumRate | Number/Float | sheet `motorCoverage` | Percentage |
-| MotorCoverage | grossWrittenPremium | Number/Float | sheet `motorCoverage` | Pre-tax premium and acquisition costs |
-| MotorCoverage | indemnityLimitPolicy | Number/integer | sheet `motorCoverage` | Annual policy limit |
-| MotorCoverage | indemnityLimitAccident | Number/integer | sheet `motorCoverage` | Per-accident limit |
-| MotorCoverage | peril | enum (motorPeril) | sheet `motorPeril`, API enum `motorPeril` | 17 values: TPL, fire, theft, accidental damage, windshield damage, malicious damage, terrorism and sabotage, flood, earthquake, volcanic eruption, tsunami, hail, unknown or hit-and-run, riots, strikes, civil commotion, war |
-| MotorCoverage | voluntaryDeductibleAmount | Number/integer | sheet `motorCoverage` |  |
-| MotorCoverage | compulsoryDeductibleAmount | Number/integer | sheet `motorCoverage` |  |
-| MotorCoverage | windscreenDeductibleAmount | Number/integer | sheet `motorCoverage` |  |
-| MotorCoverage | distanceUnit | enum (distanceUnit) | sheet `motorCoverage` | km / miles |
-| MotorCoverage | pleasureDistance | Number/Float | sheet `motorCoverage` | PAYD support |
-| MotorCoverage | businessDistance | Number/Float | sheet `motorCoverage` | PAYD support |
-| Driver | name | Text | sheet `Driver` |  |
-| Driver | driverDOB | Date | sheet `Driver` |  |
-| Driver | isPrimaryDriver | Boolean | sheet `Driver` |  |
-| Driver | licence | ref (drivingLicence) | sheet `Driver` |  |
-| Driver | noClaimsDiscount | Number/integer | sheet `Driver` | Years of NCB |
-| Driver | conviction | ref (conviction) | sheet `Driver` | Multi-valued |
-| Driver | medicalCondition | ref (medicalCondition) | sheet `Driver` | OPIN spelling `medicalConditon` on Driver sheet; `[normalisation]` applied |
-| Driver | loading | Number/Float | sheet `Driver` | Young driver % loading |
-| Driver | isBlueBadge | Boolean | sheet `Driver` | UK accessibility scheme |
-| Driver | workStatus | enum (workStatus) | sheet `workStatus` | self-employed / retired / employed / redundant |
-| Vehicle | plateNumber | Text | sheet `Vehicle` |  |
-| Vehicle | countryOfRegistration | Text (ISO 3166-1 alpha-2) | sheet `Vehicle` | OPIN spelling `countryOfRegisteration`; `[normalisation]` applied |
-| Vehicle | vin | Text | sheet `Vehicle` | Standard VIN |
-| Vehicle | bodyType | enum | sheet `bodyType` | 12 values from motor car to construction equipment |
-| Vehicle | fuelType | enum | sheet `fuelType` | petrol / diesel / electric / hybrid / gas / hydrogen |
-| Vehicle | aiClassification | enum (SAE International levels 0-5) | sheet `aiClassification` | Level 0-5 autonomy |
-| Vehicle | vehicleUse | enum | sheet `vehicleUse` | business / business and leisure / commercial / sharing / subscription |
-| Vehicle | currentMileageDynamic | Number/Float | sheet `Vehicle` | From vehicle telematics |
-| Vehicle | hasAirbagDeployed | Boolean | sheet `Vehicle` | Crash signal |
-| Vehicle | consentGranted | Boolean | sheet `Vehicle` | Telematics data sharing consent |
+## Selected fields
 
-`[OPIN concern]`: The `Vehicle` entity in OPIN bundles 100+ fields spanning registration, OEM specs, real-time telematics, ADAS state, seat occupancy, tire pressure, brake pad wear, and consent flags into one sheet. This is operationally large for a single record and conflates static vehicle attributes with high-frequency telematics state. OPIN does not factor these into separate sub-entities. This version renders Vehicle as one entity, matching the inherited schema exactly, because splitting it renames fields that are already on the wire. Factoring it into static registration and OEM data on one side and dynamic telematics and condition state on the other is a change proposal held for the next major version, alongside the other compatibility breaks in [`../SCOPE.md`](../SCOPE.md).
+The fields most likely to need explanation. Everything else is in the diagram above.
 
-`[OPIN concern]`: The `Vehicle` sheet contains several typos: `countryOfRegisteration` (should be `countryOfRegistration`), `engnitionOn` and `engnitionOff` (should be `ignitionOn`/`ignitionOff`), `logitude` (should be `longitude`), `laneDepartureWarnning` (should be `laneDepartureWarning`), `decelrationRate` (should be `decelerationRate`), `yearlyMilage` (should be `yearlyMileage`). `[normalisation]` applied to the field names rendered in the Mermaid block; original OPIN spellings recorded here against the defect.
+| Entity | Field | Type | What it means |
+|---|---|---|---|
+| MotorCoverage | policyNumber | Text | The linkage key. Globally unique across every coverage type, which is what lets one claim endpoint serve all eight |
+| MotorCoverage | inceptionDate | DateTime (ISO 8601) | When cover starts. A loss before this date is not covered |
+| MotorCoverage | expiryDate | DateTime (ISO 8601) | When cover ends |
+| MotorCoverage | status | enum (policyStatus) | In force, cancelled, lapsed or extended |
+| MotorCoverage | premiumRate | Number/Float | The rate the premium is calculated at, as a percentage |
+| MotorCoverage | grossWrittenPremium | Number/Float | The full contracted premium for the term, before tax and before acquisition costs are deducted |
+| MotorCoverage | indemnityLimitPolicy | Number/integer | The most the policy pays across the whole year |
+| MotorCoverage | indemnityLimitAccident | Number/integer | The most it pays for any one accident. Not the same cap, and both apply |
+| MotorCoverage | peril | enum (motorPeril) | What the policy pays for. Seventeen values: third-party liability, fire, theft, accidental damage, windshield damage, malicious damage, terrorism and sabotage, flood, earthquake, volcanic eruption, tsunami, hail, unknown or hit-and-run, riots, strikes, civil commotion, war |
+| MotorCoverage | compulsoryDeductibleAmount | Number/integer | The excess the insurer imposes. The customer cannot decline it |
+| MotorCoverage | voluntaryDeductibleAmount | Number/integer | Additional excess the customer accepts in exchange for a cheaper premium |
+| MotorCoverage | windscreenDeductibleAmount | Number/integer | A separate, usually lower, excess for glass-only claims. Glass is claimed often and cheap to fix, so it is priced apart from the rest |
+| MotorCoverage | distanceUnit | enum (distanceUnit) | Kilometres or miles. Set it before you read any distance field |
+| MotorCoverage | pleasureDistance | Number/Float | Distance driven privately. Supports pay-as-you-drive pricing, where premium follows usage |
+| MotorCoverage | businessDistance | Number/Float | Distance driven for work, priced differently because the exposure differs |
+| Driver | driverDOB | Date | Date of birth. Age is the single strongest predictor in motor pricing |
+| Driver | isPrimaryDriver | Boolean | Whether this is the main driver. A policy has one, and additional drivers are priced against it |
+| Driver | licence | ref (drivingLicence) | The licence held, with issue date, expiry and category |
+| Driver | noClaimsDiscount | Number/integer | Years of claim-free driving, which earns a discount that grows year on year |
+| Driver | conviction | ref (conviction) | Motoring offences, multi-valued. Carries points, fine and any suspension |
+| Driver | medicalCondition | ref (medicalCondition) | Conditions that affect fitness to drive |
+| Driver | loading | Number/Float | A percentage added to the premium for identified extra risk, typically a young or newly licensed driver |
+| Driver | isBlueBadge | Boolean | Whether the driver holds a UK disabled parking badge |
+| Driver | workStatus | enum (workStatus) | Self-employed, retired, employed or redundant |
+| Vehicle | plateNumber | Text | Registration plate |
+| Vehicle | vin | Text | The 17-character vehicle identification number, unique to the vehicle worldwide |
+| Vehicle | countryOfRegistration | Text (ISO 3166-1 alpha-2) | Where the vehicle is registered |
+| Vehicle | bodyType | enum | Twelve values, from motor car to construction equipment |
+| Vehicle | fuelType | enum | Petrol, diesel, electric, hybrid, gas or hydrogen |
+| Vehicle | aiClassification | enum | Self-driving capability on the SAE International scale, level 0 (none) to level 5 (fully autonomous) |
+| Vehicle | vehicleUse | enum | Business, business and leisure, commercial, sharing or subscription. Changes the exposure and therefore the price |
+| Vehicle | sumInsured | Number/integer | What the vehicle is insured for, and the basis the premium is calculated from |
+| Vehicle | currentMileageDynamic | Number/Float | Live odometer reading, sent by the vehicle rather than declared by the customer |
+| Vehicle | hasAirbagDeployed | Boolean | Crash signal. Present because a deployed airbag is a strong indicator that a claim is coming |
+| Vehicle | consentGranted | Boolean | Whether the driver agreed to share telematics. Gates every dynamic field on this entity |
 
-`[OPIN concern]`: The `Driver` sheet field `medicalConditon` is misspelled (should be `medicalCondition`); the enum sheet itself is correctly named `medicalCondition`. `[normalisation]` applied.
+## What to watch
 
-`[OPIN concern]`: The `motorPeril` enum carries 17 values in both the XLSX and the API JSON (codes 0-16) with internal typos in descriptions (`unkown or hit and run`, `volcanic erruption`). `[normalisation]` may correct enum description spellings without changing codes; codes are stable.
+**`Vehicle` is one entity carrying more than a hundred fields.** They span registration, manufacturer
+specification, live telematics, driver assistance state, seat occupancy, tyre pressure, brake wear
+and consent, and the standard does not factor them into sub-entities. Two consequences when you
+build. Most of the entity has to be optional, because almost no caller populates all of it. And
+static attributes sit in the same record as high-frequency telematics, so a naive implementation
+rewrites the whole row to record a change in speed.
 
-Out-of-scope for OPIN: real-time telematics ingestion, event streaming, PAYD/PHYD billing computations, and ADAS event correlation. These are operational concerns that consume Vehicle telematics fields but are not modelled by OPIN as event entities. Domain extensions, if needed, are out-of-scope for this document.
+**Several field names on the wire are misspelled.** They are stable in every existing implementation,
+so they stay as they are and the corrections wait for a major version. Send the left-hand column.
+
+| Send this | It was meant to be |
+| :--- | :--- |
+| `countryOfRegisteration` | `countryOfRegistration` |
+| `engnitionOn`, `engnitionOff` | `ignitionOn`, `ignitionOff` |
+| `logitude` | `longitude` |
+| `laneDepartureWarnning` | `laneDepartureWarning` |
+| `decelrationRate` | `decelerationRate` |
+| `yearlyMilage`, and the `Dynamic` variants of it | `yearlyMileage` |
+| `medicalConditon` (on `Driver`) | `medicalCondition`, which is also the correct name of the enum it points at |
+
+**Two `motorPeril` descriptions are misspelled**, `unkown or hit and run` and
+`volcanic erruption`. The codes are what travel and the codes are stable, so match on code rather
+than on description text.
+
+**Telematics fields are storage, not a stream.** The vehicle record holds the latest values. Ingesting
+telematics, streaming events, computing usage-based billing and correlating driver-assistance events
+all sit above the standard, in whatever platform you build. See [`../SCOPE.md`](../SCOPE.md).

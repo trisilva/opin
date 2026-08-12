@@ -1,10 +1,15 @@
 # Module 11: Claims
 
-Entities, fields, enumerated values and relationships. The API surface for this module is in [`api.md`](api.md).
+The entities, fields, enumerated values and relationships. The endpoints over them are in
+[`api.md`](api.md), and the terms used throughout are defined in
+[Insurance concepts](../concepts.md).
 
-Covers the claims lifecycle: Claim entity with FNOL, loss date, type, location, liability share, reserve, status, payments; ClaimsBordereau for reinsurance reporting; claimsOccurrence basis (occurring vs made); claim type and status enums.
+**`Claim`** is one entity serving all eight coverage types. **`ClaimsBordereau`** is the periodic
+report to a reinsurer listing what has been claimed, which is why several figures appear in both
+records.
 
-OPIN sources: `Claim`, `ClaimsBordereau`, `claimsOccurrence`, `claimType`, `claimStatus`.
+A claim reaches its policy through `policyNumber`, which is globally unique across every coverage
+type. That single rule is what lets one endpoint accept a claim against any of the eight.
 
 ```mermaid
 erDiagram
@@ -64,37 +69,50 @@ erDiagram
     CLAIMS_BORDEREAU ||--|| CLAIM_STATUS : "status"
 ```
 
-### Field annotations (Module 11)
+## Selected fields
 
-| Entity | Field | Type | OPIN source | Notes |
-|---|---|---|---|---|
-| Claim | claimNumber | Text | sheet `Claim` |  |
-| Claim | fnol | DateTime (ISO 8601) | sheet `Claim` | First notice of loss |
-| Claim | lossDate | DateTime (ISO 8601) | sheet `Claim` |  |
-| Claim | claimType | enum (claimType) | sheet `claimType` | Own property / 3PL bodily / 3PL property / other |
-| Claim | location | Text (WKT geo) | sheet `Claim` |  |
-| Claim | lossCause | enum (perils, polymorphic) | sheet `Claim` | OPIN references `perils` (lowercase, plural) without specifying the peril enum |
-| Claim | liabilityShare | Number/integer | sheet `Claim` | Percentage |
-| Claim | reserve | Number/integer | sheet `Claim` | Inclusive of expenses |
-| Claim | claimStatus | enum (claimStatus) | sheet `claimStatus` | Open / closed / reopened |
-| Claim | lastUpdate | Date | sheet `Claim` |  |
-| Claim | reopenDate | Date | sheet `Claim` |  |
-| Claim | excessAmount | Number/integer | sheet `Claim` | Deductible |
-| Claim | paymentMethod | enum (paymentMethod) | sheet `Claim` |  |
-| Claim | documents | Text/URL | sheet `Claim` | Police report, photos, etc. |
-| ClaimsBordereau | treatyReference | Text | sheet `ClaimsBordereau` | Reinsurance treaty |
-| ClaimsBordereau | GrossLossReserve | Number/Float | sheet `ClaimsBordereau` | OPIN typo `GrosslLossReserve` (lowercase l between Gross and Loss); `[normalisation]` applied |
-| ClaimsBordereau | expectedRecovery | Number/Float | sheet `ClaimsBordereau` | Salvage estimate |
-| ClaimsBordereau | recoveryReceived | Number/Float | sheet `ClaimsBordereau` |  |
-| ClaimsBordereau | dateOfLoss | DateTime (ISO 8601) | sheet `ClaimsBordereau` |  |
-| ClaimsBordereau | causeOfLoss | Text | sheet `ClaimsBordereau` | Free-text on bordereau, vs `lossCause` enum on Claim |
+| Entity | Field | Type | What it means |
+|---|---|---|---|
+| Claim | claimNumber | Text | The claim's own identifier, distinct from the policy number it was claimed against |
+| Claim | fnol | DateTime (ISO 8601) | First notification of loss: when the insurer was told. Not when it happened |
+| Claim | lossDate | DateTime (ISO 8601) | When the loss actually happened. The policy must have been in force on this date, not on the notification date |
+| Claim | claimType | enum (claimType) | Own property, third-party bodily injury, third-party property, or other. This decides who is being compensated |
+| Claim | location | Text (WKT geo) | Where the loss happened, as well-known-text geometry |
+| Claim | lossCause | enum (perils) | What caused it. Checked against the perils the coverage names, and that check is what admits or refuses the claim. Which peril list applies is not declared. See below |
+| Claim | liabilityShare | Number/integer | The percentage of the loss this insurer is responsible for, where fault is split between parties |
+| Claim | reserve | Number/integer | Money set aside for a claim that is open and not yet settled. An estimate, revised as the claim is understood, and inclusive of expenses |
+| Claim | claimStatus | enum (claimStatus) | Open, closed or reopened |
+| Claim | excessAmount | Number/integer | The deductible withheld from this settlement |
+| Claim | reopenDate | Date | When a closed claim was reopened |
+| Claim | documents | Text/URL | Supporting evidence: police report, photographs, estimates |
+| ClaimsBordereau | treatyReference | Text | Which reinsurance treaty this claim is ceded under |
+| ClaimsBordereau | GrossLossReserve | Number/Float | The reserve as reported to the reinsurer. Spelled `GrosslLossReserve` on the wire, with an extra `l` |
+| ClaimsBordereau | paid | Number/Float | Cumulative payments made. Note that `Claim` itself carries no equivalent |
+| ClaimsBordereau | expenseReserve | Number/Float | Money set aside for handling costs, held apart from the loss itself |
+| ClaimsBordereau | expectedRecovery | Number/Float | What the insurer expects to recover through salvage or subrogation |
+| ClaimsBordereau | recoveryReceived | Number/Float | What has actually been recovered |
+| ClaimsBordereau | causeOfLoss | Text | Free text here, where `Claim.lossCause` is enumerated. The two do not have the same type |
 
-`[OPIN concern]`: `Claim.lossCause` references a generic `perils` (lowercase, plural) without specifying which peril enum (`motorPeril`, `propertyPeril`, `tradeCreditPeril`). The intended resolution appears to be polymorphic by coverage type, but OPIN does not declare this. Change proposal: define `lossCause` resolution explicitly.
+## What to watch
 
-`[added]`: the inherited `Claim` entity declares no foreign key to a coverage or a policy, and inferred the relationship from `claimNumber` and `policyNumber` correlation maintained by the cedant. This version replaces that inference with a rule: `policyNumber` is globally unique across the namespace, it is carried in the claim payload, and `/claim` exposes `?policyNumber=` as a filter. Correlation becomes a declared constraint rather than a shared assumption. See [`../SCOPE.md`](../SCOPE.md).
+**`lossCause` does not name which peril enumeration applies.** It references a generic set without
+saying whether that means `motorPeril`, `propertyPeril` or `tradeCreditPeril`. The intended
+resolution is polymorphic by coverage type and it is not declared anywhere. Resolve it from the
+coverage that `policyNumber` points at, and expect other implementations to have resolved it
+differently.
 
-`[OPIN concern]`: `ClaimsBordereau.GrosslLossReserve` field name is misspelled (extra `l` between `Gross` and `Loss`). `[normalisation]` applied.
+**`Claim` has no cumulative paid figure.** It carries `reserve` and nothing recording what has
+actually been paid out. `ClaimsBordereau` has `paid`, so the reinsurance report can be reconciled and
+the direct claim record cannot. Carry a paid total yourself.
 
-`[OPIN concern]`: `Claim` has no field for cumulative `paid` to date (cumulative claim payments). `ClaimsBordereau` has `paid` for reinsurance reporting, but the direct-insurance Claim entity carries only `reserve`. Reconciling reserve to paid-out requires this field. Filed as a change proposal.
+**`causeOfLoss` on the bordereau is free text while `lossCause` on the claim is enumerated.** The
+same fact is typed two ways across the two records, so a bordereau cannot be validated against the
+claim it reports.
 
-Out-of-scope for OPIN: claim sub-states beyond open/closed/reopened (such as intake, triage, in-investigation, awaiting-documents, awaiting-payment, settled-pending-recovery, voided), claim-event audit trails, and multi-actor claim workflow. These are operational extensions not modelled by OPIN.
+**`GrosslLossReserve` is misspelled and stays that way.** Extra `l` between `Gross` and `Loss`. It
+is on the wire, so send it as written. This page shows the corrected form.
+
+**No operational sub-states exist and none will be added.** Intake, triage, investigation, awaiting
+documents, awaiting payment, settled pending recovery and voided are all absent by design, along
+with claim-event audit trails and multi-actor workflow. Those describe a claim's position in one
+operator's process rather than its status under the contract.

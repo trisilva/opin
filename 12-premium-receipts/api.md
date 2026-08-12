@@ -1,8 +1,10 @@
 # Module 12: Premium and Receipts
 
-Resources, endpoints, primary flow, lifecycle and routing. The entities and fields are in [`data-model.md`](data-model.md). Conventions that apply to every module are in [`../conventions.md`](../conventions.md).
+The endpoints, the flow that records a payment, the lifecycle and the error paths. The entities and
+fields are in [`data-model.md`](data-model.md), and the rules that apply on every call are in
+[`../conventions.md`](../conventions.md).
 
-### Resource model
+## Resource model
 
 ```mermaid
 classDiagram
@@ -32,23 +34,28 @@ classDiagram
     Receipt --> PremiumBordereau : aggregated in
 ```
 
-`[added]`: the inherited Receipt schema has no foreign-key field to the policy or claim it settles. This standard exposes `policyNumber` and `claimNumber` as collection filter parameters on `/receipt`, so a receipt is located by the obligation it settles, and the global uniqueness of `policyNumber` is what makes that lookup deterministic. See [`../SCOPE.md`](../SCOPE.md).
+**A receipt carries no foreign key to the policy or claim it settles.** The linkage runs through the
+collection filters: `/receipt` accepts `policyNumber` and `claimNumber`, and `policyNumber` is
+globally unique across every coverage type, which makes that lookup deterministic. See
+[`../SCOPE.md`](../SCOPE.md).
 
-### Endpoints
+## Endpoints
 
-`[added]`: OPIN publishes the Receipt, PremiumBordereau, and ClaimsBordereau (Module 11) schemas but no endpoints.
+Claims bordereaux are created through [Claims](../11-claims/). Only the premium side lives here.
 
-- `POST /receipt` (admin)
-- `GET /receipt` (developer), filter by `policyNumber`, `claimNumber`, `receiptType`, `receiptDate` range
-- `GET /receipt/{id}` (developer)
-- `PUT /receipt/{id}` (admin)
-- `POST /receipt/{id}:refund` (admin), issues a reversing receipt rather than mutating the original
-- `POST /premiumBordereau` (admin)
-- `GET /premiumBordereau` (developer), filter by `treatyReference`
-- `GET /premiumBordereau/{id}` (developer)
-- `PUT /premiumBordereau/{id}` (admin)
+| Endpoint | Scope | What it does |
+| :--- | :--- | :--- |
+| `POST /receipt` | admin | Record a payment in either direction |
+| `GET /receipt` | developer | List, filterable by `policyNumber`, `claimNumber`, `receiptType` and a `receiptDate` range |
+| `GET /receipt/{id}` | developer | Retrieve one receipt |
+| `PUT /receipt/{id}` | admin | Replace a receipt |
+| `POST /receipt/{id}:refund` | admin | Issue a reversing receipt. The original is not modified |
+| `POST /premiumBordereau` | admin | Create a premium report |
+| `GET /premiumBordereau` | developer | List, filterable by `treatyReference` |
+| `GET /premiumBordereau/{id}` | developer | Retrieve one report |
+| `PUT /premiumBordereau/{id}` | admin | Replace a report |
 
-### Primary flow: Record a premium payment and aggregate to bordereau
+## Primary flow: record a premium and aggregate it
 
 ```mermaid
 sequenceDiagram
@@ -65,7 +72,7 @@ sequenceDiagram
     Receipt-->>Gateway: 201 {receiptId}
 ```
 
-### Lifecycle
+## Lifecycle
 
 ```mermaid
 stateDiagram-v2
@@ -75,9 +82,16 @@ stateDiagram-v2
     Reversed --> [*]
 ```
 
-`[OPIN concern]`: OPIN does not declare a Receipt lifecycle. This standard keeps it conservative: a receipt is a recorded financial event, immutable once recorded, and a refund is itself a new receipt with `receiptType` set to a reversing value. Reconciliation status, dispute status, and ledger postings are out of scope and live in implementer-specific extensions.
+**This diagram is normative.** A transition it does not draw is not one an implementation may make.
 
-### Routing and error handling
+A receipt is a recorded financial event and it is immutable once recorded. A refund does not modify
+it. `:refund` writes a second receipt carrying a reversing `receiptType`, so the ledger keeps both
+sides and stays auditable.
+
+Reconciliation status, dispute status and ledger postings are not modelled and will not be. They are
+accounting process rather than facts two parties need to agree on to exchange a payment record.
+
+## Errors
 
 ```mermaid
 flowchart TD

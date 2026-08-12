@@ -1,9 +1,11 @@
 # Across the modules
 
-What only makes sense above a single module: how the entities relate to each other, and the one
-flow that spans every coverage type.
+What only makes sense above a single module: how the entities relate to each other, and the one flow
+that spans every coverage type.
 
-## Cross-module relationships (composite view)
+If the vocabulary here is unfamiliar, read [Insurance concepts](concepts.md) first.
+
+## How the entities relate
 
 ```mermaid
 erDiagram
@@ -40,15 +42,35 @@ erDiagram
     CLAIM ||--o{ CLAIMS_BORDEREAU : "ceded in"
 ```
 
-The composite view shows OPIN's coverage-centric model: Product instantiates one of the eight coverage types, Personal or Commercial parties act as policyholders, Beneficiary attaches at policy level (canonically term life), Claim arises from any coverage, Receipt records the cash leg, and PremiumBordereau/ClaimsBordereau are reinsurance-side reports. Claim and Receipt reach their coverage through `policyNumber`, which this standard declares globally unique across the namespace. That rule is what carries the two associations the inherited schema left implicit, and it is set out in [`SCOPE.md`](SCOPE.md).
+Read that diagram in five steps.
 
----
+**A product becomes a coverage.** An insurer publishes products, and a product instantiates exactly
+one of the eight coverage types. The product is what is for sale; the coverage record is what one
+customer holds.
 
-## Cross-module primary flow
+**A party holds the coverage.** `Personal` or `Commercial` is the policyholder. Which of the two can
+hold which coverage is not arbitrary: cyber, business interruption and trade credit are commercial
+lines and have no personal policyholder, while pet and term life are the reverse. Property takes
+both.
 
-This standard exposes one cross-module primary flow: the universal claim submission flow. It is OPIN-aligned because OPIN's `POST /claim` is itself polymorphic across coverages.
+**A beneficiary attaches at policy level.** Canonically on [term life](05-term-life/), where the
+insured cannot collect their own death benefit.
 
-### Flow A: Submit claim (universal, polymorphic across coverages)
+**A claim arises from any coverage.** One `Claim` entity serves all eight. A receipt records the
+cash, in either direction: premium coming in, settlement going out.
+
+**Bordereaux report to reinsurers.** `PremiumBordereau` and `ClaimsBordereau` are periodic reports
+of what has been ceded. They are reports rather than transactions, which is why figures in them also
+exist elsewhere.
+
+**Everything hangs on one key.** Claim and Receipt reach their coverage through `policyNumber`,
+which is globally unique across the namespace. No foreign key field carries that relationship; the
+uniqueness rule does. It is set out in [`SCOPE.md`](SCOPE.md).
+
+## The one flow that spans every coverage type
+
+Submitting a claim is the only flow that crosses modules, and it works the same way whichever of the
+eight coverage types is involved.
 
 ```mermaid
 sequenceDiagram
@@ -68,6 +90,12 @@ sequenceDiagram
     Gateway-->>Insured: 201 Created
 ```
 
-`[OPIN]`: the `POST /claim` entry point is exactly OPIN's. The internal coverage-routing step is implementer-side, hidden from the wire contract. From the caller's perspective, one endpoint serves all coverage types.
+**One endpoint serves every coverage type.** The caller does not say what kind of policy it is
+claiming against, and does not need to. The coverage-routing step in the middle of that diagram is
+internal to the implementation and never appears on the wire.
 
-`[added]`: the polymorphism works because `policyNumber` resolves deterministically to a single coverage record across all eight coverage types. The inherited standard assumed that constraint without declaring it. This version declares it: `policyNumber` is globally unique across the namespace, and an implementation assigns policy numbers from one sequence across every coverage type it writes. See [`SCOPE.md`](SCOPE.md).
+**It works because of one rule.** `policyNumber` is globally unique across the namespace, so it
+resolves to exactly one coverage record among all eight types. An implementation therefore assigns
+policy numbers from **one sequence across every coverage type it writes**. Scope them per line of
+business and this endpoint stops working, because a number would no longer identify a single policy.
+See [`SCOPE.md`](SCOPE.md).

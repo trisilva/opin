@@ -1,10 +1,15 @@
 # Module 10: Pet
 
-Entities, fields, enumerated values and relationships. The API surface for this module is in [`api.md`](api.md).
+The entities, fields, enumerated values and relationships. The endpoints over them are in
+[`api.md`](api.md), and the terms used throughout are defined in
+[Insurance concepts](../concepts.md).
 
-Covers pet insurance: petCoverage with reimbursement, deductible, waiting period, and pre-existing conditions flag; pet entity with kind (cat, dog, bird, exotic, rabbit, 5 values per OPIN), age, size, purebred flag; breed (dog breeds only in OPIN, ~320 values); petBenefits taxonomy (38 values across veterinary, surgical, diagnostic, preventive, behavioural).
+**`petCoverage`** is the policy and **`pet`** is the animal. **`petBenefits`** is the 38-value list
+of treatment the policy pays for, across veterinary, surgical, diagnostic, preventive and
+behavioural care.
 
-OPIN sources: `petCoverage`, `pet`, `petBenefits`, `petBreed`, `petKind`.
+This line reimburses rather than indemnifies. The customer pays the vet, the deductible comes off,
+and the policy pays back a percentage of the remainder up to an annual cap.
 
 ```mermaid
 erDiagram
@@ -59,23 +64,36 @@ erDiagram
     PET_COVERAGE ||--|{ PET_BENEFIT : "scope"
 ```
 
-### Field annotations (Module 10)
+## Selected fields
 
-| Entity | Field | Type | OPIN source | Notes |
-|---|---|---|---|---|
-| PetCoverage | annualReimbursementLimit | Number/integer | sheet `petCoverage` |  |
-| PetCoverage | waitingPeriod | Number/integer | sheet `petCoverage` | Days before coverage active |
-| PetCoverage | preexistingConditions | Boolean | sheet `petCoverage` |  |
-| PetCoverage | deductible | Number/Float | sheet `petCoverage` | Percentage of each claim |
-| Pet | petKind | enum (petKind) | sheet `petKind`, API enum `petKind` | 5 values: cat, dog, bird, exotic, rabbit |
-| Pet | petBreed | enum (petBreed) | sheet `petBreed`, API enum `petBreed` | ~320 values, dog breeds only |
-| Pet | reimbursement | Number/Float | sheet `pet` | Percentage of admitted claim |
-| Pet | size | Number/Float | sheet `pet` | Expected size when fully grown (dogs) |
-| Pet | address | ref (address) | sheet `pet` | Place of residence of pet |
-| PetBenefit | code | int | sheet `petBenefits` | 38 values |
+| Entity | Field | Type | What it means |
+|---|---|---|---|
+| PetCoverage | annualReimbursementLimit | Number/integer | The most the policy pays back across the year |
+| PetCoverage | deductible | Number/Float | The share of each claim the customer bears, as a percentage. Typed `Number/fFloat` at source; read it as `Number/Float` |
+| PetCoverage | waitingPeriod | Number/integer | Days from inception during which nothing is covered. It exists because a pet owner can buy a policy on the way to the vet |
+| PetCoverage | preexistingConditions | Boolean | Whether conditions the animal already had are covered. Usually they are not |
+| PetCoverage | petBenefits | enum (petBenefits) | Which of the 38 treatment categories this policy pays for. The subset is most of what separates a cheap policy from an expensive one |
+| Pet | petKind | enum (petKind) | Five values: cat, dog, bird, exotic, rabbit |
+| Pet | petBreed | enum (petBreed) | About 320 values, all of them dog breeds. See below |
+| Pet | reimbursement | Number/Float | The percentage of an admitted claim paid back after the deductible. 80% on a 10,000,000 bill with a 1,000,000 deductible pays 7,200,000 |
+| Pet | age | Number/Float | Age in years. The dominant pricing factor, as it is in health cover |
+| Pet | purebred | Boolean | Whether the animal is pedigree. Pedigree animals carry known hereditary conditions, which changes the risk |
+| Pet | size | Number/Float | Expected size when fully grown. Larger dogs cost more to treat and live shorter lives |
+| Pet | address | ref (address) | Where the animal lives |
 
-`[OPIN concern]`: `petKind` covers cat, dog, bird, exotic, and rabbit (5 values). However, `petBreed` enumerates dog breeds only (~320 entries). Cat, rabbit, bird, and exotic-pet breed-level enumerations are not in OPIN. The result is that breed-level data exists for one of the five kinds. Change proposal: either drop breed for non-dog kinds explicitly, add per-kind breed enumerations, or model breed as a free-text fallback.
+## What to watch
 
-`[OPIN concern]`: `petCoverage` is missing the per-occurrence indemnity limit field (`indemnityLimitAccident`) that other coverages carry. `annualReimbursementLimit` may be acting as the policy limit, but the relationship to per-occurrence claims is ambiguous. Filed as a change proposal.
+**`petBreed` covers dog breeds and nothing else.** Five kinds of animal are enumerated and only one
+of them has breeds. Cats, rabbits, birds and exotics have no breed values at all. Decide before you
+build whether you will leave the field empty for non-dogs, carry an extension field, or fall back to
+free text. Whatever you choose, another implementation will have chosen differently, so do not
+assume breed data is comparable across systems.
 
-`[OPIN concern]`: `petCoverage` types `deductible` as `Number/fFloat` (typo). `[normalisation]` to `Number/Float`. The same lower-f typo appears across multiple sheets (`businessInterruptionCoverage`, `tradeCreditCoverage`, `pet`, `petCoverage`).
+**There is no per-occurrence limit.** Every other coverage type carries `indemnityLimitAccident`.
+This one does not. `annualReimbursementLimit` may be serving as the policy limit, and the
+relationship between the annual cap and any single claim is not declared. Agree the reading
+explicitly.
+
+**`waitingPeriod` has no lifecycle state.** The policy is in force from the moment it is bound. The
+waiting period is calculated against `inceptionDate` when a claim is evaluated, not tracked on the
+record.

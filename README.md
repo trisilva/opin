@@ -34,21 +34,26 @@ it.
 Modules 1, 2, 11 and 12 are cross-cutting and every coverage type uses them. Modules 3 to 10 are the
 eight coverage lines.
 
-Three pages sit alongside the modules and apply to all of them.
+Four pages sit alongside the modules and apply to all of them.
 
 | Page | What it holds |
 | :--- | :--- |
-| [`conventions.md`](conventions.md) | Base URL, authentication, error model, pagination, idempotency, action endpoints, extensions, and how the modules are annotated. Read once. |
-| [`cross-module.md`](cross-module.md) | How the entities relate across modules, and the universal claim submission flow |
+| [`concepts.md`](concepts.md) | The insurance vocabulary the modules assume. Read first if the domain is new to you |
+| [`conventions.md`](conventions.md) | Base URL, authentication, error model, pagination, idempotency, action endpoints and extensions. Read once |
+| [`cross-module.md`](cross-module.md) | How the entities relate across modules, and the claim flow that spans every coverage type |
 | [`SCOPE.md`](SCOPE.md) | How the entities link, what is settled by convention, and what the standard leaves to the platforms above it |
 
 ## How to read this
 
-**Building one coverage line.** Open that module's directory. Its README says what to check first,
-then read `data-model.md` for what the fields mean and `api.md` for the surface. Read
-[`conventions.md`](conventions.md) once, because it applies everywhere. If you are new to the
-standard, read [Motor](03-motor/) first even if you are not building motor, because every other
-module's endpoints mirror the shape declared there.
+**New to insurance.** Start at [`concepts.md`](concepts.md). It defines the vocabulary every module
+assumes: premium, deductible, peril, indemnity limit, endorsement, reserve, bordereau and the rest.
+An hour there saves a day everywhere else.
+
+**Building one coverage line.** Open that module's directory. Its README says what the line of
+business is and what to watch, then `data-model.md` says what the fields mean and `api.md` gives you
+the surface. Read [`conventions.md`](conventions.md) once, because it applies everywhere. Read
+[Motor](03-motor/) first even if you are not building motor, because every other module's endpoints
+mirror the shape declared there.
 
 **Building in one market.** Read the module, then the
 [market profile](project/markets/README.md) for your market. A profile constrains and adds; it
@@ -56,8 +61,8 @@ never changes what a field means.
 
 **Fixing a defect.** [`project/inherited/`](project/inherited/) catalogues twenty defects in the
 inherited data standard and fourteen in the inherited API specification, each with the position this
-version takes on it. Three of the structural ones are closed here, and the rest are compatibility
-breaks held for one major version so an implementer absorbs them together.
+version takes on it. Four of the structural ones are closed here and a fifth is partly closed. The
+rest are compatibility breaks held for one major version so an implementer absorbs them together.
 
 ## The second layer: market profiles
 

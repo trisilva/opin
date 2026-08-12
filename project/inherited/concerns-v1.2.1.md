@@ -21,7 +21,7 @@ those corrections wait for a major version and ship together. See
 
 2. **`rootConstruction` vs `roofConstruction` API typo.** API JSON spells the roof construction enum as `rootConstruction`; XLSX correctly uses `roofConstruction`. Fix in API.
 
-3. **`propertyCoverage.claimsOccurrence` Boolean vs enum.** Field is typed Boolean on `propertyCoverage`, but a standalone two-value `claimsOccurrence` enum sheet exists. Choose one form across the standard.
+3. **`propertyCoverage.claimsOccurrence` Boolean vs enum.** Field is typed Boolean on `propertyCoverage`, but a standalone two-value `claimsOccurrence` enum sheet exists. Choose one form across the standard. Closed in v1.5.0-draft: the enum is the form everywhere, and `cyberLiabilityCoverage` moved to it as well.
 
 4. **`property` sheet duplicate field name.** `numberOfBedrooms` listed twice; one occurrence is intended to be `numberOfBathrooms` per its description.
 
@@ -47,7 +47,7 @@ those corrections wait for a major version and ship together. See
 
 15. **`ClaimsBordereau.GrosslLossReserve` field name typo.** Should be `GrossLossReserve`.
 
-16. **`policyWording` is a single-property entity (just `name`) without version control.** Compliance traceability for wording documents is not supported. Add `version`, `effectiveDate`, and document URL fields.
+16. **`policyWording` is a single-property entity (just `name`) without version control.** Compliance traceability for wording documents is not supported. Add `version`, `effectiveDate`, and document URL fields. Partially closed in v1.5.0-draft: `version` and `effectiveDate` are added, which is enough to identify the wording in force on a date. The document URL is still open, so the text itself is held implementer-side.
 
 17. **`Personal.gender` enum is binary plus `other` (m / f / o).** Some jurisdictions require additional values or a different non-binary representation. Review for jurisdictional fit, including Vietnam.
 
