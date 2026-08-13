@@ -10,6 +10,13 @@ Initiative and published between 2018 and 2022. This repository continues it.
 **Current version: v1.5.0-draft.** Additive over the inherited baseline, and the version
 implementations are being built against.
 
+**Read it as a site.** The standard is published at
+[trisilva.ai/docs/standard](https://trisilva.ai/docs/standard), rendered from this repository with
+search and working cross-links between the modules, and the Vietnam market profile is at
+[trisilva.ai/docs/markets/vietnam](https://trisilva.ai/docs/markets/vietnam). This repository stays
+the canonical source: every page there carries an edit link back to the file it came from. Trisilva
+maintains the standard and publishes it open under MPL 2.0.
+
 ## The twelve modules
 
 The standard is the twelve directories at the root of this repository. Each holds the data model and
