@@ -40,23 +40,23 @@ They are wire behaviour rather than process, so they live with the rest of the w
 
 ## The conformance artefacts
 
-Four artefacts make each level checkable, and each depends on the one before it.
+Four artefacts will make each level checkable, and each depends on the one before it.
 
-| | Artefact | What it makes checkable |
+| | Artefact | What it will make checkable |
 | :--- | :--- | :--- |
 | 1 | JSON Schema 2020-12 for every entity in the data model | Level 1, vocabulary |
 | 2 | An OpenAPI 3.1 document for the surface | Level 2, surface |
 | 3 | Worked examples per module, valid against the schemas | Both, and they are the first test fixtures |
 | 4 | A validator running the examples against the schemas in CI | The standard against itself |
 
-The fourth is the one that matters most to a reader deciding whether to build on this. It means
-the standard cannot contradict itself without the build saying so, which is precisely the
+The fourth is the one that will matter most to a reader deciding whether to build on this. It
+will mean the standard cannot contradict itself without the build saying so, which is precisely the
 failure that produced the inherited divergence between the data standard and the API
 specification.
 
 **The prose is normative and the artefacts are derived from it.** Not the other way round, and
 never both at once. Two normative descriptions of one standard is how the inherited documents
 came to disagree about `termLifeType` and `termLifeRiders`, and repeating that mistake with a
-schema alongside the prose would reproduce it exactly. Each artefact is generated from the
+schema alongside the prose would reproduce it exactly. Each artefact will be generated from the
 normative text and labelled as derived, so a disagreement between them is a defect in the
 generator rather than an open question for an implementer to adjudicate.
